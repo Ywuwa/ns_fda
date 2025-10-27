@@ -1,0 +1,7 @@
+# File with modeling data (50 symb for each line)
+
+#============= MESH CHARACTERISTICS =============
+Mesh knots number: 100
+
+#============= FLOW CHARACTERISTICS =============
+Reynold's number:  100
