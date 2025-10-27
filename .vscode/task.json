@@ -10,8 +10,7 @@
         "${file}",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe",
-        "-I",
-        "D:\\Projects\\C++\\ns_fda\\headers"
+        "-I${workspaceFolder}/**"
       ],
       "options": {
         "cwd": "${fileDirname}"
