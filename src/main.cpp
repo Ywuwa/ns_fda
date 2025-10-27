@@ -1,7 +1,7 @@
 #include <iostream>
-#include "headers/inout.hpp"
+#include "inout.hpp"
 
 int main() {
   int n = 0;
-  std::cin >> "print smth" >> n >> "\n";
+  std::cin >> n;
 }
