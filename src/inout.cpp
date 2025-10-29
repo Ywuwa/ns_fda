@@ -14,28 +14,27 @@ int input(const std::string& filename, model_data& params) {
     }
 
     std::string line;
-    // Skip first 3 intro lines
-    for (int i = 0; i < 3; ++i) {
+    // Skip first 2 intro lines
+    for (int i = 0; i < 2; ++i) {
         if (!std::getline(file, line)) {
             return -3; // Cannot read 3 lines
         }
     }
-    std::vector<std::string> data_collection = {};
+    std::cout << "before unboxing" << '\n';
+    std::vector<std::string> data_collection;
     while (std::getline(file, line)) {
-      while (!(line.empty())) {
+      std::cout << line << '\n';
+      if (!(line.empty())) {
           size_t colon_pos = line.find(':');
           if (colon_pos == std::string::npos || colon_pos == line.length() - 1) {
               continue;  // Skip lines that don't contain "text:number"
           }
 
           std::string number_str = line.substr(colon_pos + 1);
-          try {
-              data_collection.emplace_back(number_str);
-              break;
-          } catch (...) {
-              continue;  // Skip lines with invalid number format
-          }
+          std::cout << number_str << '\n';
+          data_collection.emplace_back(number_str.begin(), number_str.end());
       }
+      std::cout << line << '\n';
     }
     // We parse this file under the assumption, that inputFile configuration is known
     // If new parameters are added into inputFile, the code below have to be modified
