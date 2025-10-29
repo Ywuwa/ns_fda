@@ -5,6 +5,9 @@
 #include <vector>
 // Modeling data
 struct model_data {
-  int mesh_knots_num {}; // mesh knots number
-  double Reyn        {}; // Reynolds number
+  int domainPartition {}; // domain partition
+  double xLen         {}; // domain x_axis length
+  double yLen         {}; // domain y_axis length
+  double zLen         {}; // domain z_axis length
+  double Reyn         {}; // Reynolds number
 };

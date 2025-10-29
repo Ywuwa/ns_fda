@@ -1,7 +1,12 @@
 # File with modeling data (50 symb for each line)
 
 #============= MESH CHARACTERISTICS =============
-Mesh knots number: 100
+Domain partition fineness: 100
+
+#============ DOMAIN CHARACTERISTICS ============
+xLen: 1.0
+yLen: 1.0
+zLen: 1.0
 
 #============= FLOW CHARACTERISTICS =============
 Reynold's number:  100

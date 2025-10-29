@@ -20,10 +20,8 @@ int input(const std::string& filename, model_data& params) {
             return -3; // Cannot read 3 lines
         }
     }
-    std::cout << "before unboxing" << '\n';
     std::vector<std::string> data_collection;
     while (std::getline(file, line)) {
-      std::cout << line << '\n';
       if (!(line.empty())) {
           size_t colon_pos = line.find(':');
           if (colon_pos == std::string::npos || colon_pos == line.length() - 1) {
@@ -31,15 +29,16 @@ int input(const std::string& filename, model_data& params) {
           }
 
           std::string number_str = line.substr(colon_pos + 1);
-          std::cout << number_str << '\n';
           data_collection.emplace_back(number_str.begin(), number_str.end());
       }
-      std::cout << line << '\n';
     }
     // We parse this file under the assumption, that inputFile configuration is known
     // If new parameters are added into inputFile, the code below have to be modified
-    params.mesh_knots_num = std::stoi(data_collection[0]);
-    params.Reyn = std::stof(data_collection[1]);
+    params.domainPartition = std::stoi(data_collection[0]);
+    params.xLen = std::stof(data_collection[1]);
+    params.yLen = std::stof(data_collection[2]);
+    params.zLen = std::stof(data_collection[3]);
+    params.Reyn = std::stof(data_collection[4]);
     return 0;
 }
 //=================================================================================================
