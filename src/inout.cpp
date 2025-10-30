@@ -1,6 +1,6 @@
 #include "D:\Projects\C++\ns_fda\headers\inout.hpp"
-//====================================== FILE READING =============================================
 
+//====================================== FILE READING =============================================
 int input(const std::string& filename, model_data& params) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -39,6 +39,29 @@ int input(const std::string& filename, model_data& params) {
     params.yLen = std::stof(data_collection[2]);
     params.zLen = std::stof(data_collection[3]);
     params.Reyn = std::stof(data_collection[4]);
+    return 0;
+}
+//=================================================================================================
+
+//======================================= MESH OUTPUT =============================================
+int meshOutput(const std::string& filename, const std::vector<double>& axisMesh) {
+    // Open a file for writing, std::ios::out ensures it's opened for writing.
+    // If the file doesn't exist, it will be created. If it exists, its content will be overwritten
+    std::ofstream outputFile(filename, std::ios::out);
+
+    // Check if the file was opened successfully
+    if (outputFile.is_open()) {
+        // Iterate through the array and write each element to the file
+        for (auto knot : axisMesh) {
+            outputFile << knot << std::endl; // Write the number and a newline character
+        }
+        // Close the file stream
+        outputFile.close();
+        std::cout << "mesh successfully written to " << filename << std::endl;
+    } else {
+        std::cerr << "Error: Unable to open file for writing." << std::endl;
+    }
+
     return 0;
 }
 //=================================================================================================
