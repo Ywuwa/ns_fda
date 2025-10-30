@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -g
 TARGET = ns_fda_3D
-SRCS = main.cpp input.cpp
+SRCS = main.cpp input.cpp mesh_n_model.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(TARGET)

@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #include "settings.hpp"
 /*! \brief input function
  *  \param[in] filename - the name of input file
