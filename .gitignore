@@ -1,4 +1,2 @@
 *.exe
-xMesh.txt
-yMesh.txt
-zMesh.txt
+*.txt

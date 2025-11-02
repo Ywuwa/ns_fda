@@ -3,8 +3,8 @@
 //=================================================================================================
 int main() {
   model_data model;
-  const std::string inputFile = "D:\\Projects\\C++\\ns_fda\\config.txt";
-  int code = input(inputFile, model);
+  const std::string inputFile = "D:\\Projects\\C++\\ns_fda\\config";
+  int code = dataInput(inputFile, model);
   std::cout << "Domain partition: " << model.domainPartition << '\n';
   std::cout << "X_axis length: " << model.xLen << '\n';
   std::cout << "Y_axis length: " << model.yLen << '\n';
@@ -31,5 +31,11 @@ int main() {
   code = meshOutput(outputMeshFile + "xMesh.txt", xMesh);
   code = meshOutput(outputMeshFile + "yMesh.txt", yMesh);
   code = meshOutput(outputMeshFile + "zMesh.txt", zMesh);
+
+  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
+  code = funcOutput(outputFuncFile, "v1", ".txt", velX, model);
+  code = funcOutput(outputFuncFile, "v2", ".txt", velY, model);
+  code = funcOutput(outputFuncFile, "v3", ".txt", velZ, model);
+  code = funcOutput(outputFuncFile, "p", ".txt", pressure, model);
 }
 //=================================================================================================

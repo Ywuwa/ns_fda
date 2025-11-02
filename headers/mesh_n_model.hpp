@@ -15,13 +15,13 @@ struct functionSet
 template <typename fSet>
 struct functionContainer
 {
-  std::vector<double (*)(const double, const double, const double)> indexedFunc;
-  functionContainer(fSet& name)
+  std::vector<double (fSet::*)(const double, const double, const double)> indexedFunc;
+  functionContainer(const fSet& name)
   {
-    indexedFunc.emplace_back(fSet::initV1);
-    indexedFunc.emplace_back(fSet::initV2);
-    indexedFunc.emplace_back(fSet::initV3);
-    indexedFunc.emplace_back(fSet::initPress);
+    indexedFunc.emplace_back(name.initV1);
+    indexedFunc.emplace_back(name.initV2);
+    indexedFunc.emplace_back(name.initV3);
+    indexedFunc.emplace_back(name.initPress);
   }
 };
 //=================================================================================================

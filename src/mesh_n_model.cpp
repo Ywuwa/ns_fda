@@ -3,19 +3,19 @@
 //=================================== INITIAL FUCNTIONS ===========================================
 double functionSet::initV1(const double x, const double y, const double z)
 {
-  return 0.0;
+  return std::max(x, y);
 }
 double functionSet::initV2(const double x, const double y, const double z)
 {
-  return 0.0;
+  return 1.0;
 }
 double functionSet::initV3(const double x, const double y, const double z)
 {
-  return 0.0;
+  return 2.0;
 }
 double functionSet::initPress(const double x, const double y, const double z)
 {
-  return 0.0;
+  return 3.0;
 }
 //=================================================================================================
 
@@ -47,7 +47,7 @@ void initialConditions(
   {
     for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
     {
-      feature.emplace_back(fC.indexedFunc[initFuncInd](i*xStep, j*yStep, 0.0));
+      feature.emplace_back( (fSet.*fC.indexedFunc[initFuncInd])(i*xStep, j*yStep, 0.0) );
     }
   }
 }
