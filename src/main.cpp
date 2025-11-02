@@ -18,6 +18,15 @@ int main() {
   std::vector<double> zMesh;
   meshInit(zMesh, model, model.zLen);
 
+  std::vector<double> velX;
+  initialConditions(velX, 0, model);
+  std::vector<double> velY;
+  initialConditions(velY, 1, model);
+  std::vector<double> velZ;
+  initialConditions(velZ, 2, model);
+  std::vector<double> pressure;
+  initialConditions(pressure, 3, model);
+
   const std::string outputMeshFile = "D:\\Projects\\C++\\ns_fda\\";
   code = meshOutput(outputMeshFile + "xMesh.txt", xMesh);
   code = meshOutput(outputMeshFile + "yMesh.txt", yMesh);
