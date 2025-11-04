@@ -72,14 +72,20 @@ int funcOutput(const std::string& path, const std::string& name, const std::stri
 {
 	const std::string filename = path + name + extension;
   std::ofstream outputFile(filename, std::ios::out);
+	size_t index  (0);
 	// Check if the file was opened successfully
 	if (outputFile.is_open()) {
 		const uint domainPartition = params.domainPartition;
-		for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
-		{
-			for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+		for (auto k = 0; k < domainPartition + 1; k++)      // Z-Axis
+    {
+			for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
 			{
-				outputFile << funcValue[j*(domainPartition+1) + i] << ' ';
+				for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+				{
+					index = k*(domainPartition+1)*(domainPartition+1) + j*(domainPartition+1) + i;
+					outputFile << funcValue[index] << ' ';
+				}
+				outputFile << '\n';
 			}
 			outputFile << '\n';
 		}

@@ -39,15 +39,19 @@ void initialConditions(
   const uint domainPartition = params.domainPartition;
   const double xStep (params.xLen / domainPartition);
   const double yStep (params.yLen / domainPartition);
-  feature.reserve( (domainPartition + 1) * (domainPartition + 1) );
+  const double zStep (params.zLen / domainPartition);
+  feature.reserve( (domainPartition + 1) * (domainPartition + 1) * (domainPartition + 1) );
   functionSet fSet;
   functionContainer fC(fSet);
 
-  for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
+  for (auto k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {
-    for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+    for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
     {
-      feature.emplace_back( (fSet.*fC.indexedFunc[initFuncInd])(i*xStep, j*yStep, 0.0) );
+      for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+      {
+        feature.emplace_back( (fSet.*fC.indexedFunc[initFuncInd])(i*xStep, j*yStep, k*zStep) );
+      }
     }
   }
 }
