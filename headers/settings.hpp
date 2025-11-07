@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <cmath>
 using uint = unsigned int;
 // Modeling data
 struct model_data {
