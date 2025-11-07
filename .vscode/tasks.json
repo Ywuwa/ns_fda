@@ -10,6 +10,7 @@
         "${file}",
         "${workspaceFolder}\\src\\inout.cpp",
         "${workspaceFolder}\\src\\mesh_n_model.cpp",
+        "${workspaceFolder}\\src\\compute_flow.cpp",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe"
       ],

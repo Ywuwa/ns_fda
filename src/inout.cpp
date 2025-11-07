@@ -35,10 +35,12 @@ int dataInput(const std::string& filename, model_data& params) {
 	// We parse this file under the assumption, that inputFile configuration is known
 	// If new parameters are added into inputFile, the code below have to be modified
 	params.domainPartition = std::stoi(data_collection[0]);
-	params.xLen = std::stof(data_collection[1]);
-	params.yLen = std::stof(data_collection[2]);
-	params.zLen = std::stof(data_collection[3]);
-	params.Reyn = std::stof(data_collection[4]);
+	params.timePartition = std::stoi(data_collection[1]);
+	params.xLen = std::stof(data_collection[2]);
+	params.yLen = std::stof(data_collection[3]);
+	params.zLen = std::stof(data_collection[4]);
+	params.duration = std::stof(data_collection[5]);
+	params.Reyn = std::stof(data_collection[6]);
 	return 0;
 }
 //=================================================================================================
