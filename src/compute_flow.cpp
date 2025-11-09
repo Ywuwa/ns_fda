@@ -41,8 +41,8 @@ void compute(
     {
       for (auto i = 1; i < dimSize; i++)  // X-Axis
       {
-        uint index1 (j*dimSize + i);
-        uint index2 (dimSize*dimSize*dimSize + j*dimSize + i);
+        uint index1 (j*(dimSize+1) + i);
+        uint index2 (dimSize*(dimSize+1)*(dimSize+1) + j*(dimSize+1) + i);
       }
     }
     // XZ-plane Y = 0 / Y = MAX
@@ -50,8 +50,8 @@ void compute(
     {
       for (auto i = 1; i < dimSize; i++)  // X-Axis
       {
-        uint index1 (k*dimSize*dimSize + i);
-        uint index2 (k*dimSize*dimSize + dimSize*dimSize + i);
+        uint index1 (k*(dimSize+1)*(dimSize+1) + i);
+        uint index2 (k*(dimSize+1)*(dimSize+1) + dimSize*(dimSize+1) + i);
       }
     }
     // YZ-plane X = 0 / X = MAX
@@ -59,8 +59,8 @@ void compute(
     {
       for (auto j = 1; j < dimSize; j++)  // X-Axis
       {
-        uint index1 (k*dimSize*dimSize + j*dimSize);
-        uint index2 (k*dimSize*dimSize + j*dimSize + dimSize);
+        uint index1 (k*(dimSize+1)*(dimSize+1) + j*(dimSize+1));
+        uint index2 (k*(dimSize+1)*(dimSize+1) + j*(dimSize+1) + dimSize);
       }
     }
     //-------------------------------------------------------------------------
