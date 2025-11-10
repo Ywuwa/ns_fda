@@ -41,5 +41,8 @@ int main() {
   code = funcOutput(outputFuncFile, "v2", ".txt", velY, model);
   code = funcOutput(outputFuncFile, "v3", ".txt", velZ, model);
   code = funcOutput(outputFuncFile, "p", ".txt", pressure, model);
+
+  std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::app);
+  if (outputFile.is_open()) outputFile << "execution is finished" << '\n';
 }
 //=================================================================================================
