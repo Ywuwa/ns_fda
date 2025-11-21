@@ -12,7 +12,8 @@
         "${workspaceFolder}\\src\\mesh_n_model.cpp",
         "${workspaceFolder}\\src\\compute_flow.cpp",
         "-o",
-        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+        "${fileDirname}\\${fileBasenameNoExtension}.exe",
+        "-I", "D:/Projects/C++/eigen-5.0.0"
       ],
       "options": {
         "cwd": "C:/msys64/mingw64/bin"

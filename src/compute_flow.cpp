@@ -1,4 +1,6 @@
 #include "D:\Projects\C++\ns_fda\headers\compute_flow.hpp"
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 //==================================== FLOW COMPUTATION ===========================================
 void compute(
@@ -232,6 +234,8 @@ void compute(
     v.clear(); v = std::move(v1);
     w.clear(); w = std::move(w1);
     u1.resize(vecSize); v1.resize(vecSize); w1.resize(vecSize);
+    //-------------------------------------------------------------------------
+    
     //-------------------------------------------------------------------------
     // barrier, sync point
     //-------------------------------------------------------------------------
