@@ -109,10 +109,10 @@ int meshOutput(const std::string& filename, const std::vector<double>& axisMesh)
 //=================================================================================================
 
 //===================================== FUNCTION OUTPUT ===========================================
-int funcOutput(const std::string& path, const std::string& name, const std::string& extension, 
-               const std::vector<double>& funcValue, const model_data& params)
+int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
+	const std::string& extension, const std::vector<double>& funcValue, const model_data& params)
 {
-	const std::string filename = path + name + "/0" + extension;
+	const std::string filename = path + name + "/" + number + extension;
   std::ofstream outputFile(filename, std::ios::out);
 	size_t index  (0);
 	// Check if the file was opened successfully

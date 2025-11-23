@@ -1,8 +1,8 @@
 # File with modeling data (50 symb for each line)
 
 #============= MESH CHARACTERISTICS =============
-Domain partition fineness: 9
-Time partition fineness: 1
+Domain partition fineness: 49
+Time partition fineness: 9
 
 #============ DOMAIN CHARACTERISTICS ============
 xLen: 1.0

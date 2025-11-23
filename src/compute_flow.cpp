@@ -1,12 +1,14 @@
 #include "D:\Projects\C++\ns_fda\headers\compute_flow.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
 
 //==================================== FLOW COMPUTATION ===========================================
 void compute(
   model_data& params, 
-  std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p)
+  std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0)
 {
+  int code = 0;
   uint tick = 0;
   const auto dimSize ( params.domainPartition );
   uint offsetY = dimSize + 1;
@@ -17,11 +19,18 @@ void compute(
   const double hY (params.yLen / dimSize );
   const double hZ (params.zLen / dimSize );
 
+  std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::out);
+  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
+
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
   std::vector<double> u1(vecSize);
   std::vector<double> v1(vecSize);
   std::vector<double> w1(vecSize);
-  
+
+  Eigen::VectorXd p(vecSize);
+  for (int i = 0; i < vecSize; ++i) p[i] = p0[i];
+  Eigen::VectorXd pHat(vecSize);
+
   while (tick < params.timePartition + 1)
   {
     //! velocity compute
@@ -240,141 +249,386 @@ void compute(
     // barrier, sync point
     //-------------------------------------------------------------------------
 
+    //! initialization of equation entities (Ax = b)
+    Eigen::SparseMatrix<double> A(vecSize, vecSize);
+    Eigen::VectorXd B(vecSize);
+    std::vector<Eigen::Triplet<double>> triplets; // entities for filling a sparse matrix
+
     //! pressure compute
     //---------------------------- inner knots --------------------------------
-    for (auto k = 1; k < dimSize; k++)      // Z-Axis
+    for (auto k = 2; k < dimSize-1; k++)      // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)    // Y-Axis
+      for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
       {
-        for (auto i = 1; i < dimSize; i++)  // X-Axis
+        for (auto i = 2; i < dimSize-1; i++)  // X-Axis
         {
-          uint index (k*offsetZ + j*offsetY + i);
-          // matrix construct
-          // call solver
+          uint index (k*offsetZ + j*offsetY + i); // central index
+          // values at indexes
+          const double indexVal_000 = - (1.0/(2*hX*hX) + 1.0/(2*hY*hY) + 1.0/(2*hZ*hZ)); // centre
+          const double indexVal_R00 = 1.0/(4*hX*hX); // +offsetX
+          const double indexVal_L00 = 1.0/(4*hX*hX); // -offsetX
+          const double indexVal_0R0 = 1.0/(4*hY*hY); // +offsetY
+          const double indexVal_0L0 = 1.0/(4*hY*hY); // -offsetY
+          const double indexVal_00R = 1.0/(4*hZ*hZ); // +offsetZ
+          const double indexVal_00L = 1.0/(4*hZ*hZ); // -offsetZ
+          // matrix construct via EIGEN triplets 
+          triplets.emplace_back(index,index,indexVal_000);
+          triplets.emplace_back(index,index+1,indexVal_R00);
+          triplets.emplace_back(index,index-1,indexVal_L00);
+          triplets.emplace_back(index,index+offsetY,indexVal_0R0);
+          triplets.emplace_back(index,index-offsetY,indexVal_0L0);
+          triplets.emplace_back(index,index+offsetZ,indexVal_00R);
+          triplets.emplace_back(index,index-offsetZ,indexVal_00L);
+          // right side assignement
+          B[index] = 
+            -(u[index+2]*u[index+2] - 2*u[index]*u[index] + u[index-2]*u[index-2])
+              /(4*hX*hX)
+            -(v[index+2*offsetY]*v[index+2*offsetY] - 2*v[index]*v[index] + v[index-2*offsetY]*v[index-2*offsetY])
+              /(4*hY*hY)
+            -(w[index+2*offsetZ]*w[index+2*offsetZ] - 2*w[index]*w[index] + w[index-2*offsetZ]*w[index-2*offsetZ])
+              /(4*hZ*hZ)
+            -2.0 * (
+              (u[index+offsetY+1]*v[index+offsetY+1] - u[index-offsetY+1]*v[index-offsetY+1]
+                - u[index+offsetY-1]*v[index+offsetY-1] + u[index-offsetY-1]*v[index-offsetY-1]) 
+                  / (4*hX*hY)
+              + (u[index+offsetZ+1]*w[index+offsetZ+1] - u[index-offsetZ+1]*w[index-offsetZ+1]
+                - u[index+offsetZ-1]*w[index+offsetZ-1] + u[index-offsetZ-1]*w[index-offsetZ-1]) 
+                  / (4*hX*hZ)
+              + (v[index+offsetZ+offsetY]*w[index+offsetZ+offsetY] - v[index-offsetZ+offsetY]*w[index-offsetZ+offsetY]
+                - v[index+offsetZ-offsetY]*w[index+offsetZ-offsetY] + v[index-offsetZ-offsetY]*w[index-offsetZ-offsetY])
+                  /(4*hY*hZ)
+            );
         }
       }
     }
     //-------------------------------------------------------------------------
 
     //---------------------------- border knots -------------------------------
-    //! XY-plane Z = 0 / Z = MAX; Neiman's condition dp/dz = 0
-    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    //! XY-plane Z = 0,1 / Z = MAX-1,MAX; Neiman's condition dp/dz = 0
+    for (auto j = 2; j < dimSize-2; j++)    // Y-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (j*offsetY + i);
         uint index2 (dimSize*offsetZ + j*offsetY + i);
-        p[index1] = p[index1 + offsetZ];
-        p[index2] = p[index2 - offsetZ];
+        uint index3 (offsetZ + j*offsetY + i);
+        uint index4 ((dimSize-1)*offsetZ + j*offsetY + i);
+        // matrix construct via EIGEN triplets 
+        // behind low border
+        triplets.emplace_back(index3,index3, 1.0);
+        triplets.emplace_back(index3,index3+offsetZ, -1.0); 
+        // low border
+        triplets.emplace_back(index1,index1, 1.0);
+        triplets.emplace_back(index1,index3, -1.0);
+        // behind up border
+        triplets.emplace_back(index4,index4, 1.0);
+        triplets.emplace_back(index4,index4-offsetZ, -1.0);
+        // up border
+        triplets.emplace_back(index2,index2, 1.0);
+        triplets.emplace_back(index2,index4, -1.0);
+        
+        B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
       }
     }
-    //! XZ-plane Y = 0 / Y = MAX; Neiman's condition dp/dy = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    //! XZ-plane Y = 0,1 / Y = MAX-1,MAX; Neiman's condition dp/dy = 0
+    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (k*offsetZ + i);
         uint index2 (k*offsetZ + dimSize*offsetY + i);
-        p[index1] = p[index1 + offsetY];
-        p[index2] = p[index2 - offsetY];
+        uint index3 (k*offsetZ + offsetY + 1);
+        uint index4 (k*offsetZ + (dimSize-1)*offsetY + i);
+        // matrix construct via EIGEN triplets 
+        // behind Y0 border
+        triplets.emplace_back(index3,index3, 1.0);
+        triplets.emplace_back(index3,index3+offsetY, -1.0); 
+        // Y0 border
+        triplets.emplace_back(index1,index1, 1.0);
+        triplets.emplace_back(index1,index3, -1.0);
+        // behind YMAX border
+        triplets.emplace_back(index4,index4, 1.0);
+        triplets.emplace_back(index4,index4-offsetY, -1.0);
+        // YMAX border
+        triplets.emplace_back(index2,index2, 1.0);
+        triplets.emplace_back(index2,index4, -1.0);
+
+        B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
       }
     }
-    //! YZ-plane X = 0 / X = MAX; Neiman's condition dp/dx = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    //! YZ-plane X = 0,1 / X = MAX-1,MAX; Neiman's condition dp/dx = 0
+    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)  // X-Axis
+      for (auto j = 2; j < dimSize-1; j++)  // X-Axis
       {
         uint index1 (k*offsetZ + j*offsetY);
         uint index2 (k*offsetZ + j*offsetY + dimSize);
-        p[index1] = p[index1 + 1];
-        p[index2] = p[index2 - 1];
+        uint index3 (k*offsetZ + j*offsetY + 1);
+        uint index4 (k*offsetZ + j*offsetY + dimSize-1);
+        // matrix construct via EIGEN triplets (flow out)
+        // behind X0 border
+        triplets.emplace_back(index3,index3, 1.0);
+        triplets.emplace_back(index3,index3+1, -1.0); 
+        // X0 border
+        triplets.emplace_back(index1,index1, 1.0);
+        triplets.emplace_back(index1,index3, -1.0);
+        // behind XMAX border
+        triplets.emplace_back(index4,index4, 1.0);
+        triplets.emplace_back(index4,index4-1, -1.0);
+        // XMAX border
+        triplets.emplace_back(index2,index2, 1.0);
+        triplets.emplace_back(index2,index4, -1.0);
+
+        B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
       }
     }
     //-------------------------------------------------------------------------
 
     //---------------------------- edge knots ---------------------------------
-    //! Y = Z = (0 || MAX); 
-    for (auto i = 1; i < dimSize; i++)
+    //! Y = Z = (0,1 || MAX,MAX-1); 
+    for (auto i = 2; i < dimSize-1; i++)
     {
       // Y = Z = 0
       uint index1 (i);
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+offsetY, -1.0); 
       // Y = MAX, Z = 0
       uint index2 (dimSize*offsetY + i);
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-offsetY, -1.0);
       // Y = 0, Z = MAX
       uint index3 (dimSize*offsetZ + i);
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+offsetY, -1.0);
       // Y = MAX, Z = MAX
       uint index4 (dimSize*offsetZ + dimSize*offsetY + i);
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-offsetY, -1.0);
 
-      p[index1] = p[index1 + offsetY];
-      p[index2] = p[index2 - offsetY];
-      p[index3] = p[index3 + offsetY];
-      p[index4] = p[index4 - offsetY];
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
 
+      // Y = Z = 1
+      index1 = offsetZ + offsetY + i;
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+offsetY, -1.0); 
+      // Y = MAX-1, Z = 1
+      index2 = (dimSize-1)*offsetY + offsetZ + i;
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-offsetY, -1.0);
+      // Y = 1, Z = MAX-1
+      index3 = (dimSize-1)*offsetZ + offsetY + i;
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+offsetY, -1.0);
+      // Y = MAX-1, Z = MAX-1
+      index4 = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + i;
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-offsetY, -1.0);
+
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
     for (auto j = 1; j < dimSize; j++)
     {
       // X = Z = 0
       uint index1 (j*offsetY);
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+1, -1.0); 
       // X = MAX, Z = 0
       uint index2 (j*offsetY + dimSize);
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-1, -1.0); 
       // X = 0, Z = MAX
       uint index3 (dimSize*offsetZ + j*offsetY);
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+1, -1.0); 
       // X = MAX, Z = MAX
       uint index4 (dimSize*offsetZ + j*offsetY + dimSize);
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-1, -1.0); 
 
-      p[index1] = p[index1 + 1];
-      p[index2] = p[index2 - 1];
-      p[index3] = p[index3 + 1];
-      p[index4] = p[index4 - 1];
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
+
+      // X = Z = 1
+      index1 = offsetZ + j*offsetY + 1;
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+1, -1.0); 
+      // X = MAX-1, Z = 1
+      index2 = offsetZ + j*offsetY + dimSize-1;
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-1, -1.0); 
+      // X = 1, Z = MAX-1
+      index3 = (dimSize-1)*offsetZ + j*offsetY + 1;
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+1, -1.0); 
+      // X = MAX-1, Z = MAX-1
+      index4 = (dimSize-1)*offsetZ + j*offsetY + dimSize-1;
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-1, -1.0); 
+
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
     for (auto k = 1; k < dimSize; k++)
     {
       // X = Y = 0
       uint index1 (k*offsetZ);
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+1, -1.0); 
       // X = MAX, Y = 0
       uint index2 (k*offsetZ + dimSize);
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-1, -1.0); 
       // X = 0, Y = MAX
       uint index3 (k*offsetZ + dimSize*offsetY);
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+1, -1.0);
       // X = MAX, Y = MAX
       uint index4 (k*offsetZ + dimSize*offsetY + dimSize);
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-1, -1.0); 
 
-      p[index1] = p[index1 + 1];
-      p[index2] = p[index2 - 1];
-      p[index3] = p[index3 + 1];
-      p[index4] = p[index4 - 1];
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
+
+      // X = Y = 1
+      index1 = k*offsetZ + offsetY + 1;
+      triplets.emplace_back(index1,index1, 1.0);
+      triplets.emplace_back(index1,index1+1, -1.0); 
+      // X = MAX-1, Y = 1
+      index2 = k*offsetZ + offsetY + dimSize-1;
+      triplets.emplace_back(index2,index2, 1.0);
+      triplets.emplace_back(index2,index2-1, -1.0); 
+      // X = 1, Y = MAX-1
+      index3 = k*offsetZ + (dimSize-1)*offsetY + 1;
+      triplets.emplace_back(index3,index3, 1.0);
+      triplets.emplace_back(index3,index3+1, -1.0);
+      // X = MAX-1, Y = MAX-1
+      index4 = k*offsetZ + (dimSize-1)*offsetY + dimSize-1;
+      triplets.emplace_back(index4,index4, 1.0);
+      triplets.emplace_back(index4,index4-1, -1.0); 
+
+      B[index1] = B[index2] = B[index3] = B[index4] = 0.0;
     }
     //-------------------------------------------------------------------------
 
     //------------------------- cube vertices ---------------------------------
+    // X = Y = Z = 1
+    index = offsetZ + offsetY + 1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
+    // X = MAX-1, Y = Z = 1
+    index = offsetZ + offsetY + dimSize-1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
+    // X = Z = 1, Y = MAX-1
+    index = offsetZ + (dimSize-1)*offsetY + 1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
+    // X = Y = 1, Z = MAX-1
+    index = (dimSize-1)*offsetZ + offsetY + 1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
+    // X = Y = MAX-1, Z = 1
+    index = offsetZ + (dimSize-1)*offsetY + dimSize-1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
+    // X = Z = MAX-1, Y = 1
+    index = (dimSize-1)*offsetZ + offsetY + dimSize-1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
+    // Y = Z = MAX-1, X = 1
+    index = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + 1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
+    // X = Y = Z = MAX-1
+    index = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + dimSize-1;
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
+
     // X = Y = Z = 0
     index = 0;
-    p[index] = p[index + 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
     // X = MAX, Y = Z = 0
     index = dimSize;
-    p[index] = p[index - 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
     // X = Z = 0, Y = MAX
     index = dimSize*offsetY;
-    p[index] = p[index + 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
     // X = Y = 0, Z = MAX
     index = dimSize*offsetZ;
-    p[index] = p[index + 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
     // X = Y = MAX, Z = 0
     index = dimSize*offsetY + dimSize;
-    p[index] = p[index - 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
     // X = Z = MAX, Y = 0
     index = dimSize*offsetZ + dimSize;
-    p[index] = p[index - 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
     // Y = Z = MAX, X = 0
     index = dimSize*offsetZ + dimSize*offsetY;
-    p[index] = p[index + 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index+1, -1.0); 
+    B[index] = 0.0;
     // X = Y = Z = MAX
     index = dimSize*offsetZ + dimSize*offsetY + dimSize;
-    p[index] = p[index - 1];
+    triplets.emplace_back(index,index, 1.0);
+    triplets.emplace_back(index,index-1, -1.0); 
+    B[index] = 0.0;
     //-------------------------------------------------------------------------
+
+    //-------------------------------------------------------------------------
+    // barrier, sync point
+    //-------------------------------------------------------------------------
+
+    //-------------------------------------------------------------------------
+    // call Eigen solver for Pressure (idk, does is support concurrency or not)
+    //-------------------------------------------------------------------------
+    A.setFromTriplets (triplets.begin(), triplets.end());
+    // biconjugate gradient stabilized algorithm
+    Eigen::BiCGSTAB<Eigen::SparseMatrix<double>, 
+                    Eigen::DiagonalPreconditioner<double>> solver(A);
+    if (solver.info() != Eigen::Success)
+    {
+      outputFile << "Can not build preconditioner" << std::endl;
+      return;
+    }
+    pHat = solver.solveWithGuess(B, p);
+    if (solver.info() != Eigen::Success)
+    {
+      outputFile << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
+      return;
+    }
+    //-------------------------------------------------------------------------
+    // refresh Pressure values (transfer Eigen-vector to vector)
+    //-------------------------------------------------------------------------
+    p = std::move(pHat);
     tick += 1;
+    std::cout << "tick: " << tick << '\n';
+    for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
+    code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params);
+    code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params);
+    code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params);
+    code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params);
   }
+  for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
 }
 //=================================================================================================

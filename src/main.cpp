@@ -27,20 +27,18 @@ int main() {
   std::vector<double> pressure;
   initialConditions(pressure, 3, model);
 
+  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
+  code = funcOutput(outputFuncFile, "v1", std::to_string(0), ".txt", velX, model);
+  code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model);
+  code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model);
+  code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model);
   // flow computation
   compute(model, velX, velY, velZ, pressure);
-
-  // final res output
+  // mesh output
   const std::string outputMeshFile = "D:\\Projects\\C++\\ns_fda\\";
   code = meshOutput(outputMeshFile + "xMesh.txt", xMesh);
   code = meshOutput(outputMeshFile + "yMesh.txt", yMesh);
   code = meshOutput(outputMeshFile + "zMesh.txt", zMesh);
-
-  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
-  code = funcOutput(outputFuncFile, "v1", ".txt", velX, model);
-  code = funcOutput(outputFuncFile, "v2", ".txt", velY, model);
-  code = funcOutput(outputFuncFile, "v3", ".txt", velZ, model);
-  code = funcOutput(outputFuncFile, "p", ".txt", pressure, model);
 
   std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::app);
   if (outputFile.is_open()) outputFile << "execution is finished" << '\n';

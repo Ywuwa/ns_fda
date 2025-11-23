@@ -18,12 +18,13 @@ int meshOutput(const std::string& filename, const std::vector<double>& axisMesh)
 
 /*! \brief grid-function value output
  *  \param[in] path      - path to dir
- *  \param[in] name      - direct filename
+ *  \param[in] name      - directory name
+ *  \param[in] number    - number of file
  *  \param[in] extension - file extension
  *  \param[in] funcValue - function value
  *  \param[in] params    - the link to parameters structure
  *  \return code of operation
  */
-int funcOutput(const std::string& path, const std::string& name, const std::string& extension, 
-               const std::vector<double>& funcValue, const model_data& params);
+int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
+	const std::string& extension, const std::vector<double>& funcValue, const model_data& params);
   //=================================================================================================
