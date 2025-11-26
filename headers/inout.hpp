@@ -23,8 +23,10 @@ int meshOutput(const std::string& filename, const std::vector<double>& axisMesh)
  *  \param[in] extension - file extension
  *  \param[in] funcValue - function value
  *  \param[in] params    - the link to parameters structure
+ *  \param[in] onOffNotification - ON/OFF console text
  *  \return code of operation
  */
 int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
-	const std::string& extension, const std::vector<double>& funcValue, const model_data& params);
+	const std::string& extension, const std::vector<double>& funcValue, const model_data& params,
+  const bool onOffNotification = false);
   //=================================================================================================

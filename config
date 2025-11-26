@@ -1,14 +1,14 @@
 # File with modeling data (50 symb for each line)
 
 #============= MESH CHARACTERISTICS =============
-Domain partition fineness: 49
-Time partition fineness: 9
+Domain partition fineness: 10
+Time partition fineness: 1000
 
 #============ DOMAIN CHARACTERISTICS ============
 xLen: 1.0
 yLen: 1.0
 zLen: 1.0
-duration: 1.0
+duration: 2.0
 
 #============= FLOW CHARACTERISTICS =============
 Reynold's number:  100

@@ -110,7 +110,8 @@ int meshOutput(const std::string& filename, const std::vector<double>& axisMesh)
 
 //===================================== FUNCTION OUTPUT ===========================================
 int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
-	const std::string& extension, const std::vector<double>& funcValue, const model_data& params)
+	const std::string& extension, const std::vector<double>& funcValue, const model_data& params,
+	const bool onOffNotification)
 {
 	const std::string filename = path + name + "/" + number + extension;
   std::ofstream outputFile(filename, std::ios::out);
@@ -133,7 +134,7 @@ int funcOutput(const std::string& path, const std::string& name, const std::stri
 		}
 		// Close the file stream
 		outputFile.close();
-		std::cout << name << " successfully written to " << filename << std::endl;
+		if (onOffNotification) std::cout << name << " successfully written to " << filename << std::endl;
 	} else {
 		std::cerr << "Error: Unable to open file for writing." << std::endl;
 	}

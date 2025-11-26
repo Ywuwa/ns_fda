@@ -28,10 +28,10 @@ int main() {
   initialConditions(pressure, 3, model);
 
   const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
-  code = funcOutput(outputFuncFile, "v1", std::to_string(0), ".txt", velX, model);
-  code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model);
-  code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model);
-  code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model);
+  code = funcOutput(outputFuncFile, "v1", std::to_string(0), ".txt", velX, model, true);
+  code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model, true);
+  code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model, true);
+  code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model, true);
   // flow computation
   compute(model, velX, velY, velZ, pressure);
   // mesh output
