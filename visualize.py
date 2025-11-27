@@ -47,7 +47,9 @@ def read_cube_txt(path):
       for i, val in enumerate(row):
         arr[k, j, i] = float(val)
   return arr  # shape (nz, ny, nx)
+#==============================================================================
 
+#==============================================================================
 def visualize_nodes(values, cube_size=1.0, cmap='viridis', s=5):
   """
   values: numpy array shape (nz, ny, nx)
@@ -67,9 +69,7 @@ def visualize_nodes(values, cube_size=1.0, cmap='viridis', s=5):
   # Перестроим в векторный вид совместимо с values
   # values сейчас (nz, ny, nx) — приведём к (ny, nx, nz) чтобы соответствовать meshgrid indexing='xy'
   vals_reordered = np.transpose(values, (1, 2, 0))
-  Xf = X.ravel()
-  Yf = Y.ravel()
-  Zf = Z.ravel()
+  Xf = X.ravel(); Yf = Y.ravel(); Zf = Z.ravel()
   Vf = vals_reordered.ravel()
 
   # нормируем цвета по значениям
@@ -103,7 +103,85 @@ def visualize_nodes(values, cube_size=1.0, cmap='viridis', s=5):
   #plt.show()
   plt.close(fig) # закрываем фигуру, чтобы не расходовать память
   return frame
+#==============================================================================
+
+#========================== PRESSURE TWO SUBPLOTS ============================= 
+def visualize_nodes_two_subplots(
+    values, values2, cube_size=1.0, cmap='viridis', s=5):
+  """
+  values: numpy array shape (nz, ny, nx)
+  cube_size: длина ребра куба (по умолчанию 1.0)
+  cmap: matplotlib colormap
+  s: размер маркера (шарика)
+  """
+  nz, ny, nx = values.shape
+  s = 500.0 / nx
+  # координаты узлов: равномерно от 0 до cube_size вдоль каждой оси
+  xs = np.linspace(0, cube_size, nx)
+  ys = np.linspace(0, cube_size, ny)
+  zs = np.linspace(0, cube_size, nz)
+
+  # создаём сетку координат для всех узлов
+  X, Y, Z = np.meshgrid(xs, ys, zs, indexing='xy')  # X,Y shape (ny, nx, nz) -> careful with shapes
+  # Перестроим в векторный вид совместимо с values
+  # values сейчас (nz, ny, nx) — приведём к (ny, nx, nz) чтобы соответствовать meshgrid indexing='xy'
+  vals_reordered = np.transpose(values, (1, 2, 0))
+  Xf = X.ravel(); Yf = Y.ravel(); Zf = Z.ravel()
+  Vf = vals_reordered.ravel()
+
+  # нормируем цвета по значениям
+  norm = plt.Normalize(vmin=np.nanmin(Vf), vmax=np.nanmax(Vf))
+  cmap_m = plt.colormaps[cmap]
+
+  fig = plt.figure(figsize=(16, 9), layout="constrained")
+  # first subplot
+  ax1 = fig.add_subplot(121, projection='3d')
+  sc = ax1.scatter(Xf, Yf, Zf, c=Vf, 
+                  alpha=0.5, cmap=cmap_m, norm=norm, s=s, depthshade=True)
+
+  # Настройка осей и видимых границ куба
+  ax1.set_xlim(0, cube_size); ax1.set_ylim(0, cube_size); ax1.set_zlim(0, cube_size)
+  ax1.set_xlabel('X'); ax1.set_ylabel('Y'); ax1.set_zlabel('Z')
+  ax1.set_box_aspect((1, 1, 1))  # равные масштабы по осям
+  ax1.set_title('Точное решение')
   
+  # second subplot
+  vals_reordered = np.transpose(values2, (1, 2, 0))
+  Vf = vals_reordered.ravel()
+  ax = fig.add_subplot(122, projection='3d')
+  sc = ax.scatter(Xf, Yf, Zf, c=Vf, 
+                  alpha=0.5, cmap=cmap_m, norm=norm, s=s, depthshade=True)
+
+  # Настройка осей и видимых границ куба
+  ax.set_xlim(0, cube_size); ax.set_ylim(0, cube_size); ax.set_zlim(0, cube_size)
+  ax.set_xlabel('X'); ax.set_ylabel('Y'); ax.set_zlabel('Z')
+  ax.set_box_aspect((1, 1, 1))  # равные масштабы по осям
+  ax.set_title('Решение системы')
+
+  # colorbar, legend, title
+  fig.suptitle('Значения давления в узлах сетки', fontsize=16)
+  # Добавим цветовую шкалу
+  #plt.colorbar(sc, ax=ax, pad=0.1, label='Value')
+  sm = plt.cm.ScalarMappable(cmap=cmap_m, norm=norm)
+  sm.set_array([])
+  fig.colorbar(sm, ax=[ax1, ax], pad=0.1, label='Модуль скорости')
+
+  line1 = mlines.Line2D([], [], color='none', label='Custom Text Label')
+  line2 = mlines.Line2D([], [], color='none', label='Custom Text Label')
+  fig.legend([line1, line2], ('h = 0.1', 't = 0.05 h'), 
+            loc='upper left', title='Шаги сетки')
+
+  # Получаем изображение из фигуры
+  # Сначала рисуем
+  fig.canvas.draw()
+  # Преобразуем в numpy массив
+  frame = fig.canvas.renderer.buffer_rgba()
+  #plt.show()
+  plt.close(fig) # закрываем фигуру, чтобы не расходовать память
+  return frame
+#==============================================================================
+
+#==============================================================================
 def visualize_arrows(v1, v2, v3,
                      cube_size=1.0, step_index=10, scale=0.2, cmap='plasma'):
   """
@@ -180,7 +258,9 @@ def visualize_arrows(v1, v2, v3,
   #plt.show()
   plt.close(fig) # закрываем фигуру, чтобы не расходовать память
   return frame
+#==============================================================================
 
+#==============================================================================
 def visualize_arrows_two_subplots(v1, v2, v3, v1_2, v2_2, v3_2,
                      cube_size=1.0, step_index=10, scale=0.2, cmap='plasma'):
   """
@@ -290,15 +370,20 @@ def visualize_arrows_two_subplots(v1, v2, v3, v1_2, v2_2, v3_2,
   #plt.show()
   plt.close(fig) # закрываем фигуру, чтобы не расходовать память
   return frame
+#==============================================================================
 
+#=================================== MAIN =====================================
 if __name__ == '__main__':
   # Пример использования:
   # filename = 'data.txt'
   # filename = input("Путь к файлу с данными: ").strip()
   num = 10
-  filename = "p/" + str(num) + ".txt"
+  filename = "helical_p/" + str(num) + ".txt"
+  filename2 = "p/" + str(num) + ".txt"
   values = read_cube_txt(filename)  # shape (nz, ny, nx)
+  values2 = read_cube_txt(filename2)  # shape (nz, ny, nx)
   visualize_nodes(values, cube_size=1.0, cmap='viridis', s=80)
+  visualize_nodes_two_subplots(values, values2)
   
   v1_file = "helical_v1/" + str(num) + ".txt"
   v2_file = "helical_v2/" + str(num) + ".txt"
