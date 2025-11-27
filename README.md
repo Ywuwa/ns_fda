@@ -13,12 +13,12 @@ This is a study pet-project, connected with 3D solution of Navier-Stokes equatio
 ## C++ files
 
 + src
- - inout (input-output functionality)
- - main
- - mesh_n_model (init mesh and model parameters, initial conditions, precise solution)
- - compute_flow (construct scheme, solve equations)
+  - inout (input-output functionality)
+  - main
+  - mesh_n_model (init mesh and model parameters, initial conditions, precise solution)
+  - compute_flow (construct scheme, solve equations)
 + headers
- - settings (contains model parameters structure and includes some basic libraries)
+  - settings (contains model parameters structure and includes some basic libraries)
 + config (contains model data aka domain X-Y-Z size, domain partition, time partition, Reynolds number etc)
 
 ## Other
