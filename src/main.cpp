@@ -10,12 +10,12 @@ int main() {
   model.show();
 
   // mesh init (is it necessary?)
-  std::vector<double> xMesh;
+  /*std::vector<double> xMesh;
   meshInit(xMesh, model, model.xLen);
   std::vector<double> yMesh;
   meshInit(yMesh, model, model.yLen);
   std::vector<double> zMesh;
-  meshInit(zMesh, model, model.zLen);
+  meshInit(zMesh, model, model.zLen);*/
 
   // function init
   std::vector<double> velX;
@@ -34,11 +34,13 @@ int main() {
   code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model, true);
   // flow computation
   compute(model, velX, velY, velZ, pressure);
+  //compute_precise(model, velX, velY, velZ, pressure);
+  
   // mesh output
-  const std::string outputMeshFile = "D:\\Projects\\C++\\ns_fda\\";
+  /*const std::string outputMeshFile = "D:\\Projects\\C++\\ns_fda\\";
   code = meshOutput(outputMeshFile + "xMesh.txt", xMesh);
   code = meshOutput(outputMeshFile + "yMesh.txt", yMesh);
-  code = meshOutput(outputMeshFile + "zMesh.txt", zMesh);
+  code = meshOutput(outputMeshFile + "zMesh.txt", zMesh);*/
 
   std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::app);
   if (outputFile.is_open()) outputFile << "execution is finished" << '\n';

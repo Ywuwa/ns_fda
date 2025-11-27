@@ -7,6 +7,6 @@
  *  \param[in] p - pressure
  */
 void compute(
-  model_data& params, 
+  const model_data& params, 
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p);
 //=================================================================================================

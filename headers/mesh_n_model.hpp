@@ -11,17 +11,22 @@ struct ABC_Flow
   double k = 3.0;
   double P = 1.0; // the potential of volumetric forces
   double p0 = std::fabs(A) + std::fabs(B) + std::fabs(C) + P;
-  double initV1(const double x, const double y, const double z);
-  double initV2(const double x, const double y, const double z);
-  double initV3(const double x, const double y, const double z);
-  double initPress(const double x, const double y, const double z);  
+  double initV1(
+    const double x, const double y, const double z, const double t = 0.0, const double Re = 100.0);
+  double initV2(
+    const double x, const double y, const double z, const double t = 0.0, const double Re = 100.0);
+  double initV3(
+    const double x, const double y, const double z, const double t = 0.0, const double Re = 100.0);
+  double initPress(
+    const double x, const double y, const double z, const double t = 0.0, const double Re = 100.0);  
 };
 /*! \brief Function Container accumulate 4 functions of chosen function Set
  */
 template <typename fSet>
-struct functionContainer
+struct functionContainer : model_data
 {
-  std::vector<double (fSet::*)(const double, const double, const double)> indexedFunc;
+  std::vector<double (fSet::*)(
+    const double, const double, const double, const double, const double )> indexedFunc;
   functionContainer(const fSet& name)
   {
     indexedFunc.emplace_back(name.initV1);
@@ -49,4 +54,15 @@ void initialConditions(
  *  \param[in] axisLen  - the length of the current axis
  */
 void meshInit(std::vector<double>& axisMesh, const model_data& params, const double axisLen);
+//=================================================================================================
+
+//==================================== PRECISE SOLUTION ===========================================
+/*! \brief Flow computation function
+ *  \param[in] params - model data
+ *  \param[in] u, v, w - velocity components
+ *  \param[in] p - pressure
+ */
+void compute_precise(
+  const model_data& params,
+  std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p);
 //=================================================================================================
