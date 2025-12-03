@@ -40,8 +40,8 @@ def get_frame_velocity_pair(v1_file, v2_file, v3_file,
   return frame
 
 def create_video_velocity_pair(q, file, video):
-  num_frames = 300
-  fps = 5
+  num_frames = 330
+  fps = 12
   fig, ax = plt.subplots()
   ax.set_axis_off()  # отключим оси, чтобы было похоже на видео
   
@@ -75,7 +75,7 @@ def create_video_velocity_pair(q, file, video):
 
 #============================ CREATE VIDEO ====================================
 def create_video_pressure_pair(q, file, video):
-  num_frames = 300
+  num_frames = 330
   fps = 12
   fig, ax = plt.subplots()
   ax.set_axis_off()  # отключим оси, чтобы было похоже на видео

@@ -46,7 +46,8 @@ void meshInit(std::vector<double>& axisMesh, const model_data& params, const dou
 
 //=================================== INITIAL CONDITIONS ==========================================
 void initialConditions(
-  std::vector<double>& feature, const uint initFuncInd, const model_data& params)
+  std::vector<double>& feature, const uint initFuncInd, 
+  const model_data& params, const double startTime)
 {
   const uint domainPartition = params.domainPartition;
   const double xStep (params.xLen / domainPartition);
@@ -63,7 +64,8 @@ void initialConditions(
       for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
       {
         feature.emplace_back( (
-          functionSet.*fC.indexedFunc[initFuncInd])(i*xStep, j*yStep, k*zStep, 0.0, params.Reyn) );
+          functionSet.*fC.indexedFunc[initFuncInd])
+          (i*xStep, j*yStep, k*zStep, startTime, params.Reyn) );
       }
     }
   }

@@ -1,7 +1,8 @@
+#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
+#include "D:\Projects\C++\ns_fda\headers\mesh_n_model.hpp"
 #include "D:\Projects\C++\ns_fda\headers\compute_flow.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
 
 //==================================== FLOW COMPUTATION ===========================================
 void compute(
@@ -20,6 +21,7 @@ void compute(
   const double hZ (params.zLen / dimSize );
 
   std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::out);
+  std::ofstream outputResidualFile("D:\\Projects\\C++\\ns_fda\\residual.txt", std::ios::out);
   const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
 
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
@@ -236,6 +238,23 @@ void compute(
     u1[index] = u1[index - 1];
     v1[index] = v1[index - offsetY];
     w1[index] = w1[index - offsetZ];
+
+    // velocity residual
+    //-------------------------------------------------------------------------
+    std::vector<double> uExac;
+    initialConditions(uExac, 0, params, tick*tau);
+    std::vector<double> vExac;
+    initialConditions(vExac, 1, params, tick*tau);
+    std::vector<double> wExac;
+    initialConditions(wExac, 2, params, tick*tau);
+    std::vector<double> pExac;
+    initialConditions(pExac, 3, params, tick*tau);
+
+    const double velResidual 
+      = velocity_residual(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
+    outputResidualFile << velResidual << '\n' << std::endl;
+    //-------------------------------------------------------------------------
+
     //-------------------------------------------------------------------------
     // move data from upper time layer
     u.clear(); u = std::move(u1);
@@ -350,10 +369,8 @@ void compute(
         triplets.emplace_back(index4,index4, 1.0);
         // up border
         triplets.emplace_back(index2,index2, 1.0);
-        B[index1] = p[index1];
-        B[index2] = p[index2];
-        B[index3] = p[index3];
-        B[index4] = p[index4];
+        B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+        //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
       }
     }
     //! XZ-plane Y = 0,1 / Y = MAX-1,MAX; Neiman's condition dp/dy = 0
@@ -374,12 +391,11 @@ void compute(
         triplets.emplace_back(index4,index4, 1.0);
         // up border
         triplets.emplace_back(index2,index2, 1.0);
-        B[index1] = p[index1];
-        B[index2] = p[index2];
-        B[index3] = p[index3];
-        B[index4] = p[index4];
+        B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+        //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
       }
     }
+    
     //! YZ-plane X = 0,1 / X = MAX-1,MAX; Neiman's condition dp/dx = 0
     for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
     {
@@ -398,10 +414,8 @@ void compute(
         triplets.emplace_back(index4,index4, 1.0);
         // up border
         triplets.emplace_back(index2,index2, 1.0);
-        B[index1] = p[index1];
-        B[index2] = p[index2];
-        B[index3] = p[index3];
-        B[index4] = p[index4];
+        B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+        //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
       }
     }
     //-------------------------------------------------------------------------
@@ -413,36 +427,34 @@ void compute(
       // Y = Z = 0
       uint index1 (i);
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // Y = MAX, Z = 0
       uint index2 (dimSize*offsetY + i);
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // Y = 0, Z = MAX
       uint index3 (dimSize*offsetZ + i);
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3]; 
       // Y = MAX, Z = MAX
       uint index4 (dimSize*offsetZ + dimSize*offsetY + i);
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
 
       // Y = Z = 1
       index1 = offsetZ + offsetY + i;
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // Y = MAX-1, Z = 1
       index2 = (dimSize-1)*offsetY + offsetZ + i;
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // Y = 1, Z = MAX-1
       index3 = (dimSize-1)*offsetZ + offsetY + i;
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3]; 
       // Y = MAX-1, Z = MAX-1
       index4 = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + i;
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+      
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
     for (auto j = 2; j < dimSize-1; j++)
@@ -450,36 +462,34 @@ void compute(
       // X = Z = 0
       uint index1 (j*offsetY);
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // X = MAX, Z = 0
       uint index2 (j*offsetY + dimSize);
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // X = 0, Z = MAX
       uint index3 (dimSize*offsetZ + j*offsetY);
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3]; 
       // X = MAX, Z = MAX
       uint index4 (dimSize*offsetZ + j*offsetY + dimSize);
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+      
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
 
       // X = Z = 1
       index1 = offsetZ + j*offsetY + 1;
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // X = MAX-1, Z = 1
       index2 = offsetZ + j*offsetY + dimSize-1;
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // X = 1, Z = MAX-1
       index3 = (dimSize-1)*offsetZ + j*offsetY + 1;
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3];  
       // X = MAX-1, Z = MAX-1
       index4 = (dimSize-1)*offsetZ + j*offsetY + dimSize-1;
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+      
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
     for (auto k = 2; k < dimSize-1; k++)
@@ -487,36 +497,34 @@ void compute(
       // X = Y = 0
       uint index1 (k*offsetZ);
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // X = MAX, Y = 0
       uint index2 (k*offsetZ + dimSize);
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // X = 0, Y = MAX
       uint index3 (k*offsetZ + dimSize*offsetY);
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3]; 
       // X = MAX, Y = MAX
       uint index4 (k*offsetZ + dimSize*offsetY + dimSize);
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+      
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
 
       // X = Y = 1
       index1 = k*offsetZ + offsetY + 1;
       triplets.emplace_back(index1,index1, 1.0);
-      B[index1] = p[index1]; 
       // X = MAX-1, Y = 1
       index2 = k*offsetZ + offsetY + dimSize-1;
       triplets.emplace_back(index2,index2, 1.0);
-      B[index2] = p[index2]; 
       // X = 1, Y = MAX-1
       index3 = k*offsetZ + (dimSize-1)*offsetY + 1;
       triplets.emplace_back(index3,index3, 1.0);
-      B[index3] = p[index3]; 
       // X = MAX-1, Y = MAX-1
       index4 = k*offsetZ + (dimSize-1)*offsetY + dimSize-1;
       triplets.emplace_back(index4,index4, 1.0);
-      B[index4] = p[index4]; 
+      
+      B[index1] = p[index1]; B[index2] = p[index2]; B[index3] = p[index3]; B[index4] = p[index4];
+      //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //-------------------------------------------------------------------------
 
@@ -528,64 +536,64 @@ void compute(
     // X = MAX-1, Y = Z = 1
     index = offsetZ + offsetY + dimSize-1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Z = 1, Y = MAX-1
     index = offsetZ + (dimSize-1)*offsetY + 1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = 1, Z = MAX-1
     index = (dimSize-1)*offsetZ + offsetY + 1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = MAX-1, Z = 1
     index = offsetZ + (dimSize-1)*offsetY + dimSize-1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Z = MAX-1, Y = 1
     index = (dimSize-1)*offsetZ + offsetY + dimSize-1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // Y = Z = MAX-1, X = 1
     index = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + 1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = Z = MAX-1
     index = (dimSize-1)*offsetZ + (dimSize-1)*offsetY + dimSize-1;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
 
     // X = Y = Z = 0
     index = 0;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = MAX, Y = Z = 0
     index = dimSize;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Z = 0, Y = MAX
     index = dimSize*offsetY;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = 0, Z = MAX
     index = dimSize*offsetZ;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = MAX, Z = 0
     index = dimSize*offsetY + dimSize;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Z = MAX, Y = 0
     index = dimSize*offsetZ + dimSize;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // Y = Z = MAX, X = 0
     index = dimSize*offsetZ + dimSize*offsetY;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     // X = Y = Z = MAX
     index = dimSize*offsetZ + dimSize*offsetY + dimSize;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = p[index]; 
+    B[index] = p[index];
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
@@ -625,5 +633,237 @@ void compute(
   }
   for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
+}
+//=================================================================================================
+
+//======================================== RESIDUALS ==============================================
+double velocity_residual(
+  const model_data& params, 
+  std::vector<double>& uEst, std::vector<double>& vEst, std::vector<double>& wEst, 
+  std::vector<double>& pEst,
+  std::vector<double>& uExac, std::vector<double>& vExac, std::vector<double>& wExac, 
+  std::vector<double>& pExac)
+{
+  const auto dimSize ( params.domainPartition );
+  const uint offsetY = dimSize + 1;
+  const uint offsetZ = (dimSize+1) * (dimSize+1);
+
+  const double tau ( params.duration / params.timePartition ); // time step
+  const double hX (params.xLen / dimSize );
+  const double hY (params.yLen / dimSize );
+  const double hZ (params.zLen / dimSize );
+
+  double vectorResidual (0.0);
+  //---------------------------- inner knots --------------------------------
+  for (auto k = 1; k < dimSize; k++)      // Z-Axis
+  {
+    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    {
+      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      {
+        uint index (k*offsetZ + j*offsetY + i);
+        double resTerm (0.0); // residual term
+        //! Insert precise values to the scheme, tke the difference with the estimated values
+        resTerm = uEst[index] - ( uExac[index] - tau * (
+          (uExac[index+1]*uExac[index+1] - uExac[index-1]*uExac[index-1]) / (2.0*hX) + 
+          (uExac[index+offsetY]*vExac[index+offsetY] - uExac[index-offsetY]*vExac[index-offsetY]) / (2.0*hY) + 
+          (uExac[index+offsetZ]*wExac[index+offsetZ] - uExac[index-offsetZ]*wExac[index-offsetZ]) / (2.0*hZ) +
+          (pExac[index+1] - pExac[index-1]) / (2.0*hX) -
+          ( (uExac[index+1] - 2*uExac[index] + uExac[index-1]) / (hX*hX) +
+            (uExac[index+offsetY] - 2*uExac[index] + uExac[index-offsetY]) / (hY*hY) +
+            (uExac[index+offsetZ] - 2*uExac[index] + uExac[index-offsetZ]) / (hZ*hZ)
+          ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+
+        resTerm = (vEst[index] - vExac[index] - tau * (
+          (vExac[index+offsetY]*vExac[index+offsetY] - vExac[index-offsetY]*vExac[index-offsetY]) / (2.0*hY) + 
+          (uExac[index+1]*vExac[index+1] - uExac[index-1]*vExac[index-1]) / (2.0*hX) + 
+          (vExac[index+offsetZ]*wExac[index+offsetZ] - vExac[index-offsetZ]*wExac[index-offsetZ]) / (2.0*hZ) +
+          (pExac[index+offsetY] - pExac[index-offsetY]) / (2.0*hY) -
+          ( (vExac[index+1] - 2*vExac[index] + vExac[index-1]) / (hX*hX) +
+            (vExac[index+offsetY] - 2*vExac[index] + vExac[index-offsetY]) / (hY*hY) +
+            (vExac[index+offsetZ] - 2*vExac[index] + vExac[index-offsetZ]) / (hZ*hZ)
+          ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+
+        resTerm = wEst[index] - ( wExac[index] - tau * (
+          (wExac[index+offsetZ]*wExac[index+offsetZ] - wExac[index-offsetZ]*wExac[index-offsetZ]) / (2.0*hZ) + 
+          (uExac[index+1]*wExac[index+1] - uExac[index-1]*wExac[index-1]) / (2.0*hX) + 
+          (vExac[index+offsetY]*wExac[index+offsetY] - vExac[index-offsetY]*wExac[index-offsetY]) / (2.0*hY) +
+          (pExac[index+offsetZ] - pExac[index-offsetZ]) / (2.0*hZ) -
+          ( (wExac[index+1] - 2*wExac[index] + wExac[index-1]) / (hX*hX) +
+            (wExac[index+offsetY] - 2*wExac[index] + wExac[index-offsetY]) / (hY*hY) +
+            (wExac[index+offsetZ] - 2*wExac[index] + wExac[index-offsetZ]) / (hZ*hZ)
+          ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+      }
+    }
+  }
+  //-------------------------------------------------------------------------
+
+  //---------------------------- border knots -------------------------------
+  //! XY-plane Z = 0 / Z = MAX; Neiman's condition dw/dz = 0
+  /*for (auto j = 1; j < dimSize; j++)    // Y-Axis
+  {
+    for (auto i = 1; i < dimSize; i++)  // X-Axis
+    {
+      uint index1 (j*offsetY + i);
+      uint index2 (dimSize*offsetZ + j*offsetY + i);
+      u1[index1] = v1[index1] = 0.0;
+      u1[index2] = v1[index2] = 0.0;
+      w1[index1] = w1[index1 + offsetZ];
+      w1[index2] = w1[index2 - offsetZ];
+    }
+  }
+  //! XZ-plane Y = 0 / Y = MAX; Neiman's condition dv/dy = 0
+  for (auto k = 1; k < dimSize; k++)    // Z-Axis
+  {
+    for (auto i = 1; i < dimSize; i++)  // X-Axis
+    {
+      uint index1 (k*offsetZ + i);
+      uint index2 (k*offsetZ + dimSize*offsetY + i);
+      u1[index1] = w1[index1] = 0.0;
+      u1[index2] = w1[index2] = 0.0;
+      v1[index1] = v1[index1 + offsetY];
+      v1[index2] = v1[index2 - offsetY];
+    }
+  }
+  //! YZ-plane X = 0 / X = MAX; Neiman's condition du/dx = 0
+  for (auto k = 1; k < dimSize; k++)    // Z-Axis
+  {
+    for (auto j = 1; j < dimSize; j++)  // X-Axis
+    {
+      uint index1 (k*offsetZ + j*offsetY);
+      uint index2 (k*offsetZ + j*offsetY + dimSize);
+      v1[index1] = w1[index1] = 0.0;
+      v1[index2] = w1[index2] = 0.0;
+      u1[index1] = u1[index1 + 1];
+      u1[index2] = u1[index2 - 1];
+    }
+  }
+  //-------------------------------------------------------------------------
+
+  //---------------------------- edge knots ---------------------------------
+  //! Y = Z = (0 || MAX); dv/dy = 0; dw/dz = 0
+  for (auto i = 1; i < dimSize; i++)
+  {
+    // Y = Z = 0
+    uint index1 (i);
+    // Y = MAX, Z = 0
+    uint index2 (dimSize*offsetY + i);
+    // Y = 0, Z = MAX
+    uint index3 (dimSize*offsetZ + i);
+    // Y = MAX, Z = MAX
+    uint index4 (dimSize*offsetZ + dimSize*offsetY + i);
+
+    u1[index1] = u1[index2] = u1[index3] = u1[index4] = 0.0;
+
+    v1[index1] = v1[index1 + offsetY];
+    v1[index2] = v1[index2 - offsetY];
+    v1[index3] = v1[index3 + offsetY];
+    v1[index4] = v1[index4 - offsetY];
+
+    w1[index1] = w1[index1 + offsetZ];
+    w1[index2] = w1[index2 + offsetZ];
+    w1[index3] = w1[index3 - offsetZ];
+    w1[index4] = w1[index4 - offsetZ];
+
+  }
+  //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
+  for (auto j = 1; j < dimSize; j++)
+  {
+    // X = Z = 0
+    uint index1 (j*offsetY);
+    // X = MAX, Z = 0
+    uint index2 (j*offsetY + dimSize);
+    // X = 0, Z = MAX
+    uint index3 (dimSize*offsetZ + j*offsetY);
+    // X = MAX, Z = MAX
+    uint index4 (dimSize*offsetZ + j*offsetY + dimSize);
+
+    v1[index1] = v1[index2] = v1[index3] = v1[index4] = 0.0;
+
+    u1[index1] = u1[index1 + 1];
+    u1[index2] = u1[index2 - 1];
+    u1[index3] = u1[index3 + 1];
+    u1[index4] = u1[index4 - 1];
+
+    w1[index1] = w1[index1 + offsetZ];
+    w1[index2] = w1[index2 + offsetZ];
+    w1[index3] = w1[index3 - offsetZ];
+    w1[index4] = w1[index4 - offsetZ];
+  }
+  //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
+  for (auto k = 1; k < dimSize; k++)
+  {
+    // X = Y = 0
+    uint index1 (k*offsetZ);
+    // X = MAX, Y = 0
+    uint index2 (k*offsetZ + dimSize);
+    // X = 0, Y = MAX
+    uint index3 (k*offsetZ + dimSize*offsetY);
+    // X = MAX, Y = MAX
+    uint index4 (k*offsetZ + dimSize*offsetY + dimSize);
+
+    w1[index1] = w1[index2] = w1[index3] = w1[index4] = 0.0;
+
+    u1[index1] = u1[index1 + 1];
+    u1[index2] = u1[index2 - 1];
+    u1[index3] = u1[index3 + 1];
+    u1[index4] = u1[index4 - 1];
+
+    v1[index1] = v1[index1 + offsetY];
+    v1[index2] = v1[index2 + offsetY];
+    v1[index3] = v1[index3 - offsetY];
+    v1[index4] = v1[index4 - offsetY];
+  }
+  //-------------------------------------------------------------------------
+
+  //------------------------- cube vertices ---------------------------------
+  // X = Y = Z = 0
+  uint index (0);
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = MAX, Y = Z = 0
+  index = dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Z = 0, Y = MAX
+  index = dimSize*offsetY;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Y = 0, Z = MAX
+  index = dimSize*offsetZ;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index - offsetZ];
+  // X = Y = MAX, Z = 0
+  index = dimSize*offsetY + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Z = MAX, Y = 0
+  index = dimSize*offsetZ + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index - offsetZ];
+  // Y = Z = MAX, X = 0
+  index = dimSize*offsetZ + dimSize*offsetY;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index - offsetZ];
+  // X = Y = Z = MAX
+  index = dimSize*offsetZ + dimSize*offsetY + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index - offsetZ];*/
+  //-------------------------------------------------------------------------
+  return std::sqrt(vectorResidual);
 }
 //=================================================================================================

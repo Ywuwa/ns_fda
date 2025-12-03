@@ -42,9 +42,11 @@ struct functionContainer : model_data
  *  \param[in] feature     - feature that needs to be initialized
  *  \param[in] initFuncInd - the required function index (0, 1, 2 or 3)
  *  \param[in] params      - the link to parameters structure
+ *  \param[in] startTime   - initial condition time (default = 0.0)
  */
 void initialConditions(
-  std::vector<double>& feature, const uint initFuncInd, const model_data& params);
+  std::vector<double>& feature, const uint initFuncInd, 
+  const model_data& params, const double startTime = 0.0);
 //=================================================================================================
 
 //===================================== AXIS MESH INIT ============================================

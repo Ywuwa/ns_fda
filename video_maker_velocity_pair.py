@@ -28,7 +28,7 @@ def get_frame(v1_file, v2_file, v3_file,
     v1_val, v2_val, v3_val, v1_val2, v2_val2, v3_val2)
   return frame
 
-num_frames = 300
+num_frames = 330
 fps = 5
 fig, ax = plt.subplots()
 ax.set_axis_off()  # отключим оси, чтобы было похоже на видео
