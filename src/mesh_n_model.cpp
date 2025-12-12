@@ -1,5 +1,5 @@
-#include "D:\Projects\C++\ns_fda\headers\mesh_n_model.hpp"
-#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
+#include "../headers/mesh_n_model.hpp"
+#include "../headers/inout.hpp"
 //=================================== INITIAL FUCNTIONS ===========================================
 using abc = ABC_Flow;
 double abc::initV1(const double x, const double y, const double z, const double t, const double Re)
@@ -75,7 +75,7 @@ void compute_precise(
   const double hY (params.yLen / dimSize );
   const double hZ (params.zLen / dimSize );
 
-  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
+  const std::string outputFuncFile = params.PATH;
   ABC_Flow functionSet;
   functionContainer fC(functionSet);
   

@@ -1,6 +1,6 @@
-#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
-#include "D:\Projects\C++\ns_fda\headers\mesh_n_model.hpp"
-#include "D:\Projects\C++\ns_fda\headers\compute_flow.hpp"
+#include "../headers/inout.hpp"
+#include "../headers/mesh_n_model.hpp"
+#include "../headers/compute_flow.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

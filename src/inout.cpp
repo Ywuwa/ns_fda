@@ -1,9 +1,9 @@
-#include "D:\Projects\C++\ns_fda\headers\inout.hpp"
+#include "../headers/inout.hpp"
 
 //====================================== FILE READING =============================================
 int dataInput(const std::string& filename, model_data& params) {
 	std::ifstream file(filename);
-	std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::out);
+	std::ofstream outputFile(params.PATH + "\\log.txt", std::ios::out);
 	if (!file.is_open()) {
 		outputFile << "Cannot open file" << std::endl;
 		return -1; // Cannot open file

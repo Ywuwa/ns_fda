@@ -4,7 +4,8 @@
             "name": "GCC",
             "includePath": [
                 "${workspaceFolder}/**",
-                "D:/Projects/C++/eigen-5.0.0"
+                "D:/Projects/C++/eigen-5.0.0",
+                "${workspaceFolder}/headers/**"
             ],
             "defines": [
                 "_DEBUG",
