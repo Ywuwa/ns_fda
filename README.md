@@ -25,7 +25,7 @@ This is a study pet-project, connected with 3D solution of Navier-Stokes equatio
 + .vscode (vscode settings)
 + makefile (it probably needs to be modified)
 
-> Absolute path were set inside program files, change them in order to be able run program\
+> Absolute path were set inside settings.hpp, change it in order to be able run program\
 > makefile is not need if u want to run program via VS Code on Windows\
 > Eigen is needed to run C++ program
 
