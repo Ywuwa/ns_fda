@@ -39,15 +39,13 @@ def get_frame_velocity_pair(v1_file, v2_file, v3_file,
     v1_val, v2_val, v3_val, v1_val2, v2_val2, v3_val2)
   return frame
 
-def create_video_velocity_pair(q, file, video):
-  num_frames = 330
-  fps = 12
+def create_video_velocity_pair(q, file, video, num_frames, fps):
   fig, ax = plt.subplots()
   ax.set_axis_off()  # отключим оси, чтобы было похоже на видео
   
   # Создаем объект для записи видео через matplotlib
   Writer = animation.FFMpegWriter
-  writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=1800)
+  writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=-1)
   
   with writer.saving(fig, video, dpi=300):
     for i in range(num_frames):
@@ -74,15 +72,13 @@ def create_video_velocity_pair(q, file, video):
 #==============================================================================
 
 #============================ CREATE VIDEO ====================================
-def create_video_pressure_pair(q, file, video):
-  num_frames = 330
-  fps = 12
+def create_video_pressure_pair(q, file, video, num_frames, fps):
   fig, ax = plt.subplots()
   ax.set_axis_off()  # отключим оси, чтобы было похоже на видео
   
   # Создаем объект для записи видео через matplotlib
   Writer = animation.FFMpegWriter
-  writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=1800)
+  writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=720)
 
   with writer.saving(fig, video, dpi=300):
     for i in range(num_frames):
@@ -110,11 +106,13 @@ if __name__ == "__main__":
   video1 = 'pressure_video.mp4'
   video2 = 'velocity_video.mp4'
 
+  frames = 500 # total frames number
+  fps = 12
   # Создаём процессы для каждого видео
   p1 = multiprocessing.Process(
-    target=create_video_pressure_pair, args=(queue, file1, video1))
+    target=create_video_pressure_pair, args=(queue, file1, video1, frames, fps))
   p2 = multiprocessing.Process(
-    target=create_video_velocity_pair, args=(queue, file2, video2))
+    target=create_video_velocity_pair, args=(queue, file2, video2, frames, fps))
 
   # Запускаем процессы
   p1.start()

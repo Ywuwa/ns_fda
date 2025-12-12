@@ -5,17 +5,9 @@
 //=================================================================================================
 int main() {
   model_data model;
-  const std::string inputFile = "D:\\Projects\\C++\\ns_fda\\config";
+  const std::string inputFile = model.PATH + "\\config";
   int code = dataInput(inputFile, model);
   model.show();
-
-  // mesh init (is it necessary?)
-  /*std::vector<double> xMesh;
-  meshInit(xMesh, model, model.xLen);
-  std::vector<double> yMesh;
-  meshInit(yMesh, model, model.yLen);
-  std::vector<double> zMesh;
-  meshInit(zMesh, model, model.zLen);*/
 
   // function init
   std::vector<double> velX;
@@ -27,7 +19,7 @@ int main() {
   std::vector<double> pressure;
   initialConditions(pressure, 3, model);
 
-  const std::string outputFuncFile = "D:\\Projects\\C++\\ns_fda\\";
+  const std::string outputFuncFile = model.PATH;
   code = funcOutput(outputFuncFile, "v1", std::to_string(0), ".txt", velX, model, true);
   code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model, true);
   code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model, true);
@@ -36,13 +28,7 @@ int main() {
   compute(model, velX, velY, velZ, pressure);
   //compute_precise(model, velX, velY, velZ, pressure);
   
-  // mesh output
-  /*const std::string outputMeshFile = "D:\\Projects\\C++\\ns_fda\\";
-  code = meshOutput(outputMeshFile + "xMesh.txt", xMesh);
-  code = meshOutput(outputMeshFile + "yMesh.txt", yMesh);
-  code = meshOutput(outputMeshFile + "zMesh.txt", zMesh);*/
-
-  std::ofstream outputFile("D:\\Projects\\C++\\ns_fda\\log.txt", std::ios::app);
+  std::ofstream outputFile(model.PATH + "\\log.txt", std::ios::app);
   if (outputFile.is_open()) outputFile << "execution is finished" << '\n';
 }
 //=================================================================================================

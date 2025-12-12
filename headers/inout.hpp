@@ -9,13 +9,6 @@
  */
 int dataInput(const std::string& filename, model_data& params);
 
-/*! \brief mesh output function
- *  \param[in] filename - the name of input file
- *  \param[in] axisMesh - mesh along <AXIS>
- *  \return code of operation
- */
-int meshOutput(const std::string& filename, const std::vector<double>& axisMesh);
-
 /*! \brief grid-function value output
  *  \param[in] path      - path to dir
  *  \param[in] name      - directory name

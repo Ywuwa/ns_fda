@@ -85,29 +85,6 @@ int dataInput(const std::string& filename, model_data& params) {
 }
 //=================================================================================================
 
-//======================================= MESH OUTPUT =============================================
-int meshOutput(const std::string& filename, const std::vector<double>& axisMesh) {
-	// Open a file for writing, std::ios::out ensures it's opened for writing.
-	// If the file doesn't exist, it will be created. If it exists, its content will be overwritten
-	std::ofstream outputFile(filename, std::ios::out);
-
-	// Check if the file was opened successfully
-	if (outputFile.is_open()) {
-		// Iterate through the array and write each element to the file
-		for (auto knot : axisMesh) {
-				outputFile << knot << std::endl; // Write the number and a newline character
-		}
-		// Close the file stream
-		outputFile.close();
-		std::cout << "mesh successfully written to " << filename << std::endl;
-	} else {
-		std::cerr << "Error: Unable to open file for writing." << std::endl;
-	}
-
-	return 0;
-}
-//=================================================================================================
-
 //===================================== FUNCTION OUTPUT ===========================================
 int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
 	const std::string& extension, const std::vector<double>& funcValue, const model_data& params,

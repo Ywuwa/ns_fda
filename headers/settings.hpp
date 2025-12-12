@@ -12,6 +12,8 @@ struct model_data {
   double zLen          {}; // domain z_axis length
   double duration      {}; // flowing duration
   double Reyn          {}; // Reynolds number
+
+  const std::string PATH = "D:\\Projects\\C++\\ns_fda\\";
   void show()
   {
     std::cout << "X x Y x Z: " << xLen << " x " << yLen << " x " << zLen << '\n';

@@ -31,19 +31,6 @@ double abc::initPress(
 }
 //=================================================================================================
 
-//===================================== AXIS MESH INIT ============================================
-void meshInit(std::vector<double>& axisMesh, const model_data& params, const double axisLen)
-{
-  const uint domainPartition = params.domainPartition;
-  const double axisStep (axisLen / domainPartition);
-  axisMesh.reserve(domainPartition + 1);
-  for (auto i = 0; i < domainPartition + 1; i++)
-  {
-    axisMesh.emplace_back(i * axisStep);
-  }
-}
-//=================================================================================================
-
 //=================================== INITIAL CONDITIONS ==========================================
 void initialConditions(
   std::vector<double>& feature, const uint initFuncInd, 
