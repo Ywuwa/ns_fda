@@ -8,7 +8,7 @@ struct ABC_Flow
   double A = 1.0;
   double B = 0.1;
   double C = 0.1;
-  double k = 3.0;
+  double k = 1.0;
   double P = 1.0; // the potential of volumetric forces
   double p0 = std::fabs(A) + std::fabs(B) + std::fabs(C) + P;
   double initV1(

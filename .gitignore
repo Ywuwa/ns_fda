@@ -1,5 +1,6 @@
 *.exe
 *.txt
+*.png
 v1/*
 v2/*
 v2/*
@@ -8,5 +9,6 @@ helical_v1/*
 helical_v2/*
 helical_v2/*
 helical_p/*
+ABC_residual/*
 *.mp4
 __pycache__/

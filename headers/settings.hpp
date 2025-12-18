@@ -5,6 +5,7 @@
 using uint = unsigned int;
 // Modeling data
 struct model_data {
+  uint fdaNumber       {}; // number of finite difference approximation scheme
   uint domainPartition {}; // domain partition
   uint timePartition   {}; // time partition
   double xLen          {}; // domain x_axis length

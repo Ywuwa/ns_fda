@@ -1,12 +1,12 @@
 #include "settings.hpp"
 
 //==================================== FLOW COMPUTATION ===========================================
-/*! \brief Flow computation function
+/*! \brief Flow computation function in the cubic domain, based on FDA1 or FDA3
  *  \param[in] params - model data
  *  \param[in] u, v, w - velocity components
  *  \param[in] p - pressure
  */
-void compute(
+void compute_cube_fda_1_3(
   const model_data& params, 
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p);
 //=================================================================================================

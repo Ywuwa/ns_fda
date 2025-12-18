@@ -25,7 +25,24 @@ int main() {
   code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model, true);
   code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model, true);
   // flow computation
-  compute(model, velX, velY, velZ, pressure);
+  switch (model.fdaNumber)
+  {
+  case 1:
+    compute_cube_fda_1_3(model, velX, velY, velZ, pressure);
+    break;
+  case 2:
+    //compute_cube_fda1(model, velX, velY, velZ, pressure);
+    break;
+  case 3:
+    compute_cube_fda_1_3(model, velX, velY, velZ, pressure);
+    break;
+  case 4:
+    //compute_cube_fda1(model, velX, velY, velZ, pressure);
+    break;
+  default:
+    break;
+  }
+
   //compute_precise(model, velX, velY, velZ, pressure);
   
   std::ofstream outputFile(model.PATH + "\\log.txt", std::ios::app);

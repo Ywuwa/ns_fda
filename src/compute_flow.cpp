@@ -5,10 +5,11 @@
 #include <Eigen/Sparse>
 
 //==================================== FLOW COMPUTATION ===========================================
-void compute(
+void compute_cube_fda_1_3(
   const model_data& params, 
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0)
 {
+  bool isFDA1 (params.fdaNumber == 1);
   int code = 0;
   uint tick = 1;
   const auto dimSize ( params.domainPartition );
@@ -280,7 +281,7 @@ void compute(
     //-------------------------------------------------------------------------
     const double velResidual 
       = velocity_residual(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << '\n' << std::endl;
+    outputResidualFile << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
@@ -343,8 +344,8 @@ void compute(
               + (v[index+offsetZ+offsetY]*w[index+offsetZ+offsetY] - v[index-offsetZ+offsetY]*w[index-offsetZ+offsetY]
                 - v[index+offsetZ-offsetY]*w[index+offsetZ-offsetY] + v[index-offsetZ-offsetY]*w[index-offsetZ-offsetY])
                   / (4.0*hY*hZ)
-            )
-            + (
+            );
+            const double fda1AdditionalTerm ( (
               (u[index+2]-2*u[index+1]+2*u[index-1]-u[index-2]) / (2.0*hX*hX*hX) +
               (u[index+offsetY+1]-2*u[index+1]+u[index-offsetY+1]
                 -u[index+offsetY-1]+2*u[index-1]-u[index-offsetY-1]) 
@@ -372,7 +373,9 @@ void compute(
               (w[index+offsetZ+offsetY]-2*w[index+offsetZ]+w[index+offsetZ-offsetY]
                 -w[index-offsetZ+offsetY]+2*w[index-offsetZ]-w[index-offsetZ-offsetY]) 
                   / (2*hZ*hY*hY)
-            ) / params.Reyn;
+            ) / params.Reyn );
+            //! for FDA1 additional term is required
+            if (isFDA1) B[index] += fda1AdditionalTerm;
         }
       }
     }

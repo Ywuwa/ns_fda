@@ -36,45 +36,60 @@ int dataInput(const std::string& filename, model_data& params) {
 			data_collection.emplace_back(number_str.begin(), number_str.end());
 		}
 	}
+
 	// We parse this file under the assumption, that inputFile configuration is known
 	// If new parameters are added into inputFile, the code below have to be modified
-	params.domainPartition = std::stoi(data_collection[0]);
+	uint index = 0;
+	params.fdaNumber = std::stoi(data_collection[index]);
+		if (params.fdaNumber < 1 || params.fdaNumber > 4 ) {
+		outputFile << "number of fda scheme can not be less than 1 or exceed 4" << std::endl;
+		std::cout << "number of fda scheme can not be less than 1 or exceed 4" << '\n';
+		return -4;
+	}
+	index+=1;
+	params.domainPartition = std::stoi(data_collection[index]);
 	if (params.domainPartition < 1) {
 		outputFile << "domain partition can not be less than 1" << std::endl;
 		std::cout << "domain partition can not be less than 1" << '\n';
 		return -4;
 	}
-	params.timePartition = std::stoi(data_collection[1]);
+	index+=1;
+	params.timePartition = std::stoi(data_collection[index]);
 	if (params.timePartition < 1) {
 		outputFile << "time partition can not be less than 1" << std::endl;
 		std::cout << "time partition can not be less than 1" << '\n';
 		return -4;
 	}
-	params.xLen = std::stof(data_collection[2]);
+	index+=1;
+	params.xLen = std::stof(data_collection[index]);
 	if (params.xLen <= 0.0) {
 		outputFile << "x-axis length can not be less than 1" << std::endl;
 		std::cout << "x-axis length can not be less than 0.0" << '\n';
 		return -4;
 	}
-	params.yLen = std::stof(data_collection[3]);
+	index+=1;
+	params.yLen = std::stof(data_collection[index]);
 	if (params.yLen <= 0.0) {
 		outputFile << "y-axis length can not be less than 1" << std::endl;
 		std::cout << "y-axis length can not be less than 0.0" << '\n';
 		return -4;
 	}
-	params.zLen = std::stof(data_collection[4]);
+	index+=1;
+	params.zLen = std::stof(data_collection[index]);
 	if (params.zLen <= 0.0) {
 		outputFile << "z-axis length can not be less than 1" << std::endl;
 		std::cout << "z-axis length can not be less than 0.0" << '\n';
 		return -4;
 	}
-	params.duration = std::stof(data_collection[5]);
+	index+=1;
+	params.duration = std::stof(data_collection[index]);
 	if (params.duration <= 0.0) {
 		outputFile << "duration can not be less than 1" << std::endl;
 		std::cout << "duration can not be less than 0.0" << '\n';
 		return -4;
 	}
-	params.Reyn = std::stof(data_collection[6]);
+	index+=1;
+	params.Reyn = std::stof(data_collection[index]);
 	if (params.Reyn <= 0.0) {
 		outputFile << "Reynold's number can not be less than 1" << std::endl;
 		std::cout << "Reynold's number can not be less than 0.0" << '\n';
