@@ -28,13 +28,13 @@ int main() {
   switch (model.fdaNumber)
   {
   case 1:
-    compute_cube_fda_1_3(model, velX, velY, velZ, pressure);
+    compute_cube_FDA1_3(model, velX, velY, velZ, pressure);
     break;
   case 2:
     //compute_cube_fda1(model, velX, velY, velZ, pressure);
     break;
   case 3:
-    compute_cube_fda_1_3(model, velX, velY, velZ, pressure);
+    compute_cube_FDA1_3(model, velX, velY, velZ, pressure);
     break;
   case 4:
     //compute_cube_fda1(model, velX, velY, velZ, pressure);

@@ -1,14 +1,25 @@
 #include "settings.hpp"
 
-//==================================== FLOW COMPUTATION ===========================================
+//============================== FLOW COMPUTATION via FDA1/FDA3 ===================================
 /*! \brief Flow computation function in the cubic domain, based on FDA1 or FDA3
  *  \param[in] params - model data
  *  \param[in] u, v, w - velocity components
  *  \param[in] p - pressure
  */
-void compute_cube_fda_1_3(
+void compute_cube_FDA1_3(
   const model_data& params, 
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p);
+//=================================================================================================
+
+//============================== FLOW COMPUTATION via FDA2/FDA4 ===================================
+/*! \brief Flow computation function in the cubic domain, based on FDA2 or FDA4
+ *  \param[in] params - model data
+ *  \param[in] u, v, w - velocity components
+ *  \param[in] p - pressure
+ */
+void compute_cube_FDA2_4(
+  const model_data& params, 
+  std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0);
 //=================================================================================================
 
 //======================================== RESIDUALS ==============================================
