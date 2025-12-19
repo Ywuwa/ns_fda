@@ -31,13 +31,13 @@ int main() {
     compute_cube_FDA1_3(model, velX, velY, velZ, pressure);
     break;
   case 2:
-    //compute_cube_fda1(model, velX, velY, velZ, pressure);
+    compute_cube_FDA2_4(model, velX, velY, velZ, pressure);
     break;
   case 3:
     compute_cube_FDA1_3(model, velX, velY, velZ, pressure);
     break;
   case 4:
-    //compute_cube_fda1(model, velX, velY, velZ, pressure);
+    compute_cube_FDA2_4(model, velX, velY, velZ, pressure);
     break;
   default:
     break;

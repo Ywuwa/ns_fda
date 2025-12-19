@@ -279,7 +279,7 @@ void compute_cube_FDA1_3(
     // velocity residual
     //-------------------------------------------------------------------------
     const double velResidual 
-      = velocity_residual(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
+      = velocity_residual_FDA1_3(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
     outputResidualFile << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
@@ -334,14 +334,20 @@ void compute_cube_FDA1_3(
             -(w[index+2*offsetZ]*w[index+2*offsetZ] - 2*w[index]*w[index] + w[index-2*offsetZ]*w[index-2*offsetZ])
               /(4.0*hZ*hZ)
             -2.0 * (
-              (u[index+offsetY+1]*v[index+offsetY+1] - u[index-offsetY+1]*v[index-offsetY+1]
-                - u[index+offsetY-1]*v[index+offsetY-1] + u[index-offsetY-1]*v[index-offsetY-1]) 
+              (u[index+offsetY+1]*v[index+offsetY+1] 
+                - u[index-offsetY+1]*v[index-offsetY+1]
+                - u[index+offsetY-1]*v[index+offsetY-1] 
+                + u[index-offsetY-1]*v[index-offsetY-1]) 
                   / (4.0*hX*hY)
-              + (u[index+offsetZ+1]*w[index+offsetZ+1] - u[index-offsetZ+1]*w[index-offsetZ+1]
-                - u[index+offsetZ-1]*w[index+offsetZ-1] + u[index-offsetZ-1]*w[index-offsetZ-1]) 
+              + (u[index+offsetZ+1]*w[index+offsetZ+1] 
+                - u[index-offsetZ+1]*w[index-offsetZ+1]
+                - u[index+offsetZ-1]*w[index+offsetZ-1] 
+                + u[index-offsetZ-1]*w[index-offsetZ-1]) 
                   / (4.0*hX*hZ)
-              + (v[index+offsetZ+offsetY]*w[index+offsetZ+offsetY] - v[index-offsetZ+offsetY]*w[index-offsetZ+offsetY]
-                - v[index+offsetZ-offsetY]*w[index+offsetZ-offsetY] + v[index-offsetZ-offsetY]*w[index-offsetZ-offsetY])
+              + (v[index+offsetZ+offsetY]*w[index+offsetZ+offsetY] 
+                - v[index-offsetZ+offsetY]*w[index-offsetZ+offsetY]
+                - v[index+offsetZ-offsetY]*w[index+offsetZ-offsetY] 
+                + v[index-offsetZ-offsetY]*w[index-offsetZ-offsetY])
                   / (4.0*hY*hZ)
             );
           //! for FDA1 additional term is required
@@ -686,6 +692,7 @@ void compute_cube_FDA2_4(
   const model_data& params, 
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0)
 {
+  bool isFDA2 (params.fdaNumber == 2);
   int code = 0;  // exit code
   uint tick = 1; // number of time step
   const auto dimSize ( params.domainPartition );  // 1-dimension size
@@ -730,9 +737,39 @@ void compute_cube_FDA2_4(
         {
           uint index (k*offsetZ + j*offsetY + i);
 
-          u1[index] = u[index] - tau * ( 0.0 );
-          v1[index] = v[index] - tau * ( 0.0 );
-          w1[index] = w[index] - tau * ( 0.0 );
+          u1[index] = u[index] - tau * ( 
+            u[index]*(u[index+1]-u[index-1])/(2*hX) 
+            + v[index]*(u[index+offsetY]-u[index-offsetY])/(2*hY)
+            + w[index]*(u[index+offsetZ]-u[index-offsetZ])/(2*hZ) 
+            + (p[index+1]-p[index-1])/(2*hX)
+            - ( 
+              (u[index+1] - 2*u[index] + u[index-1]) / (hX*hX) +
+              (u[index+offsetY] - 2*u[index] + u[index-offsetY]) / (hY*hY) +
+              (u[index+offsetZ] - 2*u[index] + u[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
+          );
+          v1[index] = v[index] - tau * ( 
+            u[index]*(v[index+1]-v[index-1])/(2*hX) 
+            + v[index]*(v[index+offsetY]-v[index-offsetY])/(2*hY)
+            + w[index]*(v[index+offsetZ]-v[index-offsetZ])/(2*hZ) 
+            + (p[index+offsetY]-p[index-offsetY])/(2*hY)
+            - ( 
+              (v[index+1] - 2*v[index] + v[index-1]) / (hX*hX) +
+              (v[index+offsetY] - 2*v[index] + v[index-offsetY]) / (hY*hY) +
+              (v[index+offsetZ] - 2*v[index] + v[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
+           );
+          w1[index] = w[index] - tau * ( 
+            u[index]*(w[index+1]-w[index-1])/(2*hX) 
+            + v[index]*(w[index+offsetY]-w[index-offsetY])/(2*hY)
+            + w[index]*(w[index+offsetZ]-w[index-offsetZ])/(2*hZ) 
+            + (p[index+offsetZ]-p[index-offsetZ])/(2*hZ)
+            - ( 
+              (w[index+1] - 2*w[index] + w[index-1]) / (hX*hX) +
+              (w[index+offsetY] - 2*w[index] + w[index-offsetY]) / (hY*hY) +
+              (w[index+offsetZ] - 2*w[index] + w[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
+           );
         }
       }
     }
@@ -928,7 +965,7 @@ void compute_cube_FDA2_4(
     // velocity residual
     //-------------------------------------------------------------------------
     const double velResidual 
-      = velocity_residual(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
+      = velocity_residual_FDA2_4(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
     outputResidualFile << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
@@ -951,6 +988,9 @@ void compute_cube_FDA2_4(
 
     //! pressure compute
     //---------------------------- inner knots --------------------------------
+    double FDA_coef = 1.0;
+    //! FDA4's right part differs from FDA2's one by multiplication on 1/4
+    if (!isFDA2) FDA_coef = 0.25; 
     for (auto k = 2; k < dimSize-1; k++)      // Z-Axis
     {
       for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
@@ -959,13 +999,13 @@ void compute_cube_FDA2_4(
         {
           uint index (k*offsetZ + j*offsetY + i); // central index
           // values at indexes
-          const double indexVal_000 = - (1.0/(2.0*hX*hX) + 1.0/(2.0*hY*hY) + 1.0/(2.0*hZ*hZ)); // centre
-          const double indexVal_R00 = 1.0/(4.0*hX*hX); // +offsetX
-          const double indexVal_L00 = 1.0/(4.0*hX*hX); // -offsetX
-          const double indexVal_0R0 = 1.0/(4.0*hY*hY); // +offsetY
-          const double indexVal_0L0 = 1.0/(4.0*hY*hY); // -offsetY
-          const double indexVal_00R = 1.0/(4.0*hZ*hZ); // +offsetZ
-          const double indexVal_00L = 1.0/(4.0*hZ*hZ); // -offsetZ
+          const double indexVal_000 = - 2.0 * (1.0/(hX*hX) + 1.0/(hY*hY) + 1.0/(hZ*hZ)) * FDA_coef; // centre
+          const double indexVal_R00 = FDA_coef * 1.0/(hX*hX); // +offsetX
+          const double indexVal_L00 = FDA_coef * 1.0/(hX*hX); // -offsetX
+          const double indexVal_0R0 = FDA_coef * 1.0/(hY*hY); // +offsetY
+          const double indexVal_0L0 = FDA_coef * 1.0/(hY*hY); // -offsetY
+          const double indexVal_00R = FDA_coef * 1.0/(hZ*hZ); // +offsetZ
+          const double indexVal_00L = FDA_coef * 1.0/(hZ*hZ); // -offsetZ
           // matrix construct via EIGEN triplets 
           triplets.emplace_back(index,index,indexVal_000);
           triplets.emplace_back(index,index+2,indexVal_R00);
@@ -975,7 +1015,72 @@ void compute_cube_FDA2_4(
           triplets.emplace_back(index,index+2*offsetZ,indexVal_00R);
           triplets.emplace_back(index,index-2*offsetZ,indexVal_00L);
           // right side assignement
-          B[index] = 0;
+          B[index] = 0.0;
+          const double FDA2_right_part ( -(
+              (u[index+1]-u[index-1])*(u[index+1]-u[index-1])/(4.0*hX*hX) +
+              (v[index+offsetY]-v[index-offsetY])*(v[index+offsetY]-v[index-offsetY])/(4.0*hY*hY) +
+              (w[index+offsetZ]-w[index-offsetZ])*(w[index+offsetZ]-w[index-offsetZ])/(4.0*hZ*hZ) +
+              2.0 * ( (v[index+1]-v[index-1])*(u[index+offsetY]-u[index-offsetY])/(hX*hY)
+                + (w[index+1]-w[index-1])*(u[index+offsetZ]-u[index-offsetZ])/(hX*hZ)
+                + (v[index+offsetZ]-v[index-offsetZ])*(w[index+offsetY]-w[index-offsetY])/(hZ*hY)
+              )
+            ) );
+          if (isFDA2) {
+            std::cout << "alert" << '\n';
+            B[index] += FDA2_right_part;
+            continue;
+          }
+          const double FDA4_right_part ( 
+            -(
+              (u[index+2]*u[index+1]-u[index+1]*u[index]-u[index]*u[index-1]+u[index-1]*u[index-2])
+                /(4.0*hX*hX) +
+              (v[index+2*offsetY]*v[index+offsetY]-v[index+offsetY]*v[index]
+                -v[index]*v[index-offsetY]+v[index-offsetY]*v[index-2*offsetY]) 
+                / (4.0*hY*hY) +
+              (w[index+2*offsetZ]*w[index+offsetZ]-w[index+offsetZ]*w[index]
+                -w[index]*w[index-offsetZ]+w[index-offsetZ]*w[index-2*offsetZ]) 
+                / (4.0*hZ*hZ) +
+              (v[index+1]*u[index+offsetY+1]-v[index+1]*u[index-offsetY+1]
+                -v[index-1]*u[index+offsetY-1]+v[index-1]*u[index-offsetY-1]) 
+                / (4.0*hX*hY) +
+              (u[index+offsetZ]*w[index+offsetZ+1]-u[index+offsetZ]*w[index+offsetZ-1]
+                -u[index-offsetZ]*w[index-offsetZ+1]+u[index-offsetZ]*w[index-offsetZ-1]) 
+                / (4.0*hZ*hX) +
+              (w[index+offsetY]*v[index+offsetY+offsetZ]-w[index+offsetY]*v[index+offsetY-offsetZ]
+                -w[index-offsetY]*v[index-offsetY+offsetZ]+w[index-offsetY]*v[index-offsetY-offsetZ]) 
+                / (4.0*hY*hZ) -
+              ( (
+              (u[index+2]-2*u[index+1]+2*u[index-1]-u[index-2]) / (2.0*hX*hX*hX) +
+              (u[index+offsetY+1]-2*u[index+1]+u[index-offsetY+1]
+                -u[index+offsetY-1]+2*u[index-1]-u[index-offsetY-1]) 
+                  / (2*hX*hY*hY) +
+              (u[index+offsetZ+1]-2*u[index+1]+u[index-offsetZ+1]
+                -u[index+offsetZ-1]+2*u[index-1]-u[index-offsetZ-1]) 
+                  / (2*hX*hZ*hZ)
+                ) / params.Reyn
+              + (
+              (v[index+2*offsetY]-2*v[index+offsetY]+2*v[index-offsetY]-v[index-2*offsetY]) 
+                / (2.0*hY*hY*hY) +
+              (v[index+offsetY+1]-2*v[index+offsetY]+v[index+offsetY-1]
+                -v[index-offsetY+1]+2*v[index-offsetY]-v[index-offsetY-1]) 
+                  / (2*hY*hX*hX) +
+              (v[index+offsetY+offsetZ]-2*v[index+offsetY]+v[index+offsetY-offsetZ]
+                -v[index-offsetY+offsetZ]+2*v[index-offsetY]-v[index-offsetY-offsetZ]) 
+                  / (2*hY*hZ*hZ)
+                ) / params.Reyn
+              + (
+              (w[index+2*offsetZ]-2*w[index+offsetZ]+2*w[index-offsetZ]-w[index-2*offsetZ]) 
+                / (2.0*hZ*hZ*hZ) +
+              (w[index+offsetZ+1]-2*w[index+offsetZ]+w[index+offsetZ-1]
+                -w[index-offsetZ+1]+2*w[index-offsetZ]-w[index-offsetZ-1]) 
+                  / (2*hZ*hX*hX) +
+              (w[index+offsetZ+offsetY]-2*w[index+offsetZ]+w[index+offsetZ-offsetY]
+                -w[index-offsetZ+offsetY]+2*w[index-offsetZ]-w[index-offsetZ-offsetY]) 
+                  / (2*hZ*hY*hY)
+                ) / params.Reyn )
+            ) );
+          B[index] += FDA4_right_part;
+          
         }
       }
     }
@@ -1279,7 +1384,7 @@ void compute_cube_FDA2_4(
 
 
 //======================================== RESIDUALS ==============================================
-double velocity_residual(
+double velocity_residual_FDA1_3(
   const model_data& params, 
   std::vector<double>& uEst, std::vector<double>& vEst, std::vector<double>& wEst, 
   std::vector<double>& pEst,
@@ -1305,7 +1410,7 @@ double velocity_residual(
       {
         uint index (k*offsetZ + j*offsetY + i);
         double resTerm (0.0); // residual term
-        //! Insert precise values to the scheme, tke the difference with the estimated values
+        //! Insert precise values to the scheme, take the difference with the estimated values
         resTerm = uEst[index] - ( uExac[index] - tau * (
           (uExac[index+1]*uExac[index+1] - uExac[index-1]*uExac[index-1]) / (2.0*hX) + 
           (uExac[index+offsetY]*vExac[index+offsetY] - uExac[index-offsetY]*vExac[index-offsetY]) / (2.0*hY) + 
@@ -1318,7 +1423,7 @@ double velocity_residual(
         ) );
         vectorResidual += resTerm*resTerm;
 
-        resTerm = (vEst[index] - vExac[index] - tau * (
+        resTerm = vEst[index] - ( vExac[index] - tau * (
           (vExac[index+offsetY]*vExac[index+offsetY] - vExac[index-offsetY]*vExac[index-offsetY]) / (2.0*hY) + 
           (uExac[index+1]*vExac[index+1] - uExac[index-1]*vExac[index-1]) / (2.0*hX) + 
           (vExac[index+offsetZ]*wExac[index+offsetZ] - vExac[index-offsetZ]*wExac[index-offsetZ]) / (2.0*hZ) +
@@ -1339,6 +1444,239 @@ double velocity_residual(
             (wExac[index+offsetY] - 2*wExac[index] + wExac[index-offsetY]) / (hY*hY) +
             (wExac[index+offsetZ] - 2*wExac[index] + wExac[index-offsetZ]) / (hZ*hZ)
           ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+      }
+    }
+  }
+  //-------------------------------------------------------------------------
+
+  //---------------------------- border knots -------------------------------
+  //! XY-plane Z = 0 / Z = MAX; Neiman's condition dw/dz = 0
+  /*for (auto j = 1; j < dimSize; j++)    // Y-Axis
+  {
+    for (auto i = 1; i < dimSize; i++)  // X-Axis
+    {
+      uint index1 (j*offsetY + i);
+      uint index2 (dimSize*offsetZ + j*offsetY + i);
+      u1[index1] = v1[index1] = 0.0;
+      u1[index2] = v1[index2] = 0.0;
+      w1[index1] = w1[index1 + offsetZ];
+      w1[index2] = w1[index2 - offsetZ];
+    }
+  }
+  //! XZ-plane Y = 0 / Y = MAX; Neiman's condition dv/dy = 0
+  for (auto k = 1; k < dimSize; k++)    // Z-Axis
+  {
+    for (auto i = 1; i < dimSize; i++)  // X-Axis
+    {
+      uint index1 (k*offsetZ + i);
+      uint index2 (k*offsetZ + dimSize*offsetY + i);
+      u1[index1] = w1[index1] = 0.0;
+      u1[index2] = w1[index2] = 0.0;
+      v1[index1] = v1[index1 + offsetY];
+      v1[index2] = v1[index2 - offsetY];
+    }
+  }
+  //! YZ-plane X = 0 / X = MAX; Neiman's condition du/dx = 0
+  for (auto k = 1; k < dimSize; k++)    // Z-Axis
+  {
+    for (auto j = 1; j < dimSize; j++)  // X-Axis
+    {
+      uint index1 (k*offsetZ + j*offsetY);
+      uint index2 (k*offsetZ + j*offsetY + dimSize);
+      v1[index1] = w1[index1] = 0.0;
+      v1[index2] = w1[index2] = 0.0;
+      u1[index1] = u1[index1 + 1];
+      u1[index2] = u1[index2 - 1];
+    }
+  }
+  //-------------------------------------------------------------------------
+
+  //---------------------------- edge knots ---------------------------------
+  //! Y = Z = (0 || MAX); dv/dy = 0; dw/dz = 0
+  for (auto i = 1; i < dimSize; i++)
+  {
+    // Y = Z = 0
+    uint index1 (i);
+    // Y = MAX, Z = 0
+    uint index2 (dimSize*offsetY + i);
+    // Y = 0, Z = MAX
+    uint index3 (dimSize*offsetZ + i);
+    // Y = MAX, Z = MAX
+    uint index4 (dimSize*offsetZ + dimSize*offsetY + i);
+
+    u1[index1] = u1[index2] = u1[index3] = u1[index4] = 0.0;
+
+    v1[index1] = v1[index1 + offsetY];
+    v1[index2] = v1[index2 - offsetY];
+    v1[index3] = v1[index3 + offsetY];
+    v1[index4] = v1[index4 - offsetY];
+
+    w1[index1] = w1[index1 + offsetZ];
+    w1[index2] = w1[index2 + offsetZ];
+    w1[index3] = w1[index3 - offsetZ];
+    w1[index4] = w1[index4 - offsetZ];
+
+  }
+  //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
+  for (auto j = 1; j < dimSize; j++)
+  {
+    // X = Z = 0
+    uint index1 (j*offsetY);
+    // X = MAX, Z = 0
+    uint index2 (j*offsetY + dimSize);
+    // X = 0, Z = MAX
+    uint index3 (dimSize*offsetZ + j*offsetY);
+    // X = MAX, Z = MAX
+    uint index4 (dimSize*offsetZ + j*offsetY + dimSize);
+
+    v1[index1] = v1[index2] = v1[index3] = v1[index4] = 0.0;
+
+    u1[index1] = u1[index1 + 1];
+    u1[index2] = u1[index2 - 1];
+    u1[index3] = u1[index3 + 1];
+    u1[index4] = u1[index4 - 1];
+
+    w1[index1] = w1[index1 + offsetZ];
+    w1[index2] = w1[index2 + offsetZ];
+    w1[index3] = w1[index3 - offsetZ];
+    w1[index4] = w1[index4 - offsetZ];
+  }
+  //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
+  for (auto k = 1; k < dimSize; k++)
+  {
+    // X = Y = 0
+    uint index1 (k*offsetZ);
+    // X = MAX, Y = 0
+    uint index2 (k*offsetZ + dimSize);
+    // X = 0, Y = MAX
+    uint index3 (k*offsetZ + dimSize*offsetY);
+    // X = MAX, Y = MAX
+    uint index4 (k*offsetZ + dimSize*offsetY + dimSize);
+
+    w1[index1] = w1[index2] = w1[index3] = w1[index4] = 0.0;
+
+    u1[index1] = u1[index1 + 1];
+    u1[index2] = u1[index2 - 1];
+    u1[index3] = u1[index3 + 1];
+    u1[index4] = u1[index4 - 1];
+
+    v1[index1] = v1[index1 + offsetY];
+    v1[index2] = v1[index2 + offsetY];
+    v1[index3] = v1[index3 - offsetY];
+    v1[index4] = v1[index4 - offsetY];
+  }
+  //-------------------------------------------------------------------------
+
+  //------------------------- cube vertices ---------------------------------
+  // X = Y = Z = 0
+  uint index (0);
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = MAX, Y = Z = 0
+  index = dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Z = 0, Y = MAX
+  index = dimSize*offsetY;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Y = 0, Z = MAX
+  index = dimSize*offsetZ;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index - offsetZ];
+  // X = Y = MAX, Z = 0
+  index = dimSize*offsetY + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index + offsetZ];
+  // X = Z = MAX, Y = 0
+  index = dimSize*offsetZ + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index + offsetY];
+  w1[index] = w1[index - offsetZ];
+  // Y = Z = MAX, X = 0
+  index = dimSize*offsetZ + dimSize*offsetY;
+  u1[index] = u1[index + 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index - offsetZ];
+  // X = Y = Z = MAX
+  index = dimSize*offsetZ + dimSize*offsetY + dimSize;
+  u1[index] = u1[index - 1];
+  v1[index] = v1[index - offsetY];
+  w1[index] = w1[index - offsetZ];*/
+  //-------------------------------------------------------------------------
+  return std::sqrt(vectorResidual);
+}
+
+double velocity_residual_FDA2_4(
+  const model_data& params, 
+  std::vector<double>& uEst, std::vector<double>& vEst, std::vector<double>& wEst, 
+  std::vector<double>& pEst,
+  std::vector<double>& uExac, std::vector<double>& vExac, std::vector<double>& wExac, 
+  std::vector<double>& pExac)
+{
+  const auto dimSize ( params.domainPartition );
+  const uint offsetY = dimSize + 1;
+  const uint offsetZ = (dimSize+1) * (dimSize+1);
+
+  const double tau ( params.duration / params.timePartition ); // time step
+  const double hX (params.xLen / dimSize );
+  const double hY (params.yLen / dimSize );
+  const double hZ (params.zLen / dimSize );
+
+  double vectorResidual (0.0);
+  //---------------------------- inner knots --------------------------------
+  for (auto k = 1; k < dimSize; k++)      // Z-Axis
+  {
+    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    {
+      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      {
+        uint index (k*offsetZ + j*offsetY + i);
+        double resTerm (0.0); // residual term
+        //! Insert precise values to the scheme, take the difference with the estimated values
+        resTerm = uEst[index] - ( uExac[index] - tau * (
+            uExac[index]*(uExac[index+1]-uExac[index-1])/(2*hX) 
+            + vExac[index]*(uExac[index+offsetY]-uExac[index-offsetY])/(2*hY)
+            + wExac[index]*(uExac[index+offsetZ]-uExac[index-offsetZ])/(2*hZ) 
+            + (pExac[index+1]-pExac[index-1])/(2*hX)
+            - ( 
+              (uExac[index+1] - 2*uExac[index] + uExac[index-1]) / (hX*hX) +
+              (uExac[index+offsetY] - 2*uExac[index] + uExac[index-offsetY]) / (hY*hY) +
+              (uExac[index+offsetZ] - 2*uExac[index] + uExac[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+
+        resTerm = vEst[index] - ( vExac[index] - tau * (
+            uExac[index]*(vExac[index+1]-vExac[index-1])/(2*hX) 
+            + vExac[index]*(vExac[index+offsetY]-vExac[index-offsetY])/(2*hY)
+            + wExac[index]*(vExac[index+offsetZ]-vExac[index-offsetZ])/(2*hZ) 
+            + (pExac[index+offsetY]-pExac[index-offsetY])/(2*hY)
+            - ( 
+              (vExac[index+1] - 2*vExac[index] + vExac[index-1]) / (hX*hX) +
+              (vExac[index+offsetY] - 2*vExac[index] + vExac[index-offsetY]) / (hY*hY) +
+              (vExac[index+offsetZ] - 2*vExac[index] + vExac[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
+        ) );
+        vectorResidual += resTerm*resTerm;
+
+        resTerm = wEst[index] - ( wExac[index] - tau * (
+            uExac[index]*(wExac[index+1]-wExac[index-1])/(2*hX) 
+            + vExac[index]*(wExac[index+offsetY]-wExac[index-offsetY])/(2*hY)
+            + wExac[index]*(wExac[index+offsetZ]-wExac[index-offsetZ])/(2*hZ) 
+            + (pExac[index+offsetZ]-pExac[index-offsetZ])/(2*hZ)
+            - ( 
+              (wExac[index+1] - 2*wExac[index] + wExac[index-1]) / (hX*hX) +
+              (wExac[index+offsetY] - 2*wExac[index] + wExac[index-offsetY]) / (hY*hY) +
+              (wExac[index+offsetZ] - 2*wExac[index] + wExac[index-offsetZ]) / (hZ*hZ)
+            ) / params.Reyn
         ) );
         vectorResidual += resTerm*resTerm;
       }
