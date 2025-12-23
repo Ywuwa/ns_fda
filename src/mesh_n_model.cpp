@@ -42,7 +42,7 @@ void initialConditions(
   const double zStep (params.zLen / domainPartition);
   feature.reserve( (domainPartition + 1) * (domainPartition + 1) * (domainPartition + 1) );
   ABC_Flow functionSet;
-  functionContainer fC(functionSet);
+  functionContainer<ABC_Flow> fC(functionSet);
 
   for (auto k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {
