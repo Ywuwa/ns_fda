@@ -46,11 +46,11 @@ void compute_cube_FDA1_3(
 
     //! velocity compute
     //---------------------------- inner knots --------------------------------
-    for (auto k = 1; k < dimSize; k++)      // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)      // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)    // Y-Axis
+      for (size_t j = 1; j < dimSize; j++)    // Y-Axis
       {
-        for (auto i = 1; i < dimSize; i++)  // X-Axis
+        for (size_t i = 1; i < dimSize; i++)  // X-Axis
         {
           uint index (k*offsetZ + j*offsetY + i);
 
@@ -91,9 +91,9 @@ void compute_cube_FDA1_3(
 
     //---------------------------- border knots -------------------------------
     //! XY-plane Z = 0 / Z = MAX; Neiman's condition dw/dz = 0
-    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    for (size_t j = 1; j < dimSize; j++)    // Y-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index1 (j*offsetY + i);
         uint index2 (dimSize*offsetZ + j*offsetY + i);
@@ -109,9 +109,9 @@ void compute_cube_FDA1_3(
       }
     }
     //! XZ-plane Y = 0 / Y = MAX; Neiman's condition dv/dy = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)    // Z-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index1 (k*offsetZ + i);
         uint index2 (k*offsetZ + dimSize*offsetY + i);
@@ -127,9 +127,9 @@ void compute_cube_FDA1_3(
       }
     }
     //! YZ-plane X = 0 / X = MAX; Neiman's condition du/dx = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)    // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)  // X-Axis
+      for (size_t j = 1; j < dimSize; j++)  // X-Axis
       {
         uint index1 (k*offsetZ + j*offsetY);
         uint index2 (k*offsetZ + j*offsetY + dimSize);
@@ -148,7 +148,7 @@ void compute_cube_FDA1_3(
 
     //---------------------------- edge knots ---------------------------------
     //! Y = Z = (0 || MAX); dv/dy = 0; dw/dz = 0
-    for (auto i = 1; i < dimSize; i++)
+    for (size_t i = 1; i < dimSize; i++)
     {
       // Y = Z = 0
       uint index1 (i);
@@ -177,7 +177,7 @@ void compute_cube_FDA1_3(
 
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
-    for (auto j = 1; j < dimSize; j++)
+    for (size_t j = 1; j < dimSize; j++)
     {
       // X = Z = 0
       uint index1 (j*offsetY);
@@ -205,7 +205,7 @@ void compute_cube_FDA1_3(
       w1[index4] = wExac[index4];//w1[index4 - offsetZ] + (wExac[index4] - wExac[index4 - offsetZ]);
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
-    for (auto k = 1; k < dimSize; k++)
+    for (size_t k = 1; k < dimSize; k++)
     {
       // X = Y = 0
       uint index1 (k*offsetZ);
@@ -302,11 +302,11 @@ void compute_cube_FDA1_3(
 
     //! pressure compute
     //---------------------------- inner knots --------------------------------
-    for (auto k = 2; k < dimSize-1; k++)      // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)      // Z-Axis
     {
-      for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
+      for (size_t j = 2; j < dimSize-1; j++)    // Y-Axis
       {
-        for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+        for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
         {
           uint index (k*offsetZ + j*offsetY + i); // central index
           // values at indexes
@@ -392,9 +392,9 @@ void compute_cube_FDA1_3(
 
     //---------------------------- border knots -------------------------------
     //! XY-plane Z = 0,1 / Z = MAX-1,MAX; Neiman's condition dp/dz = 0
-    for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
+    for (size_t j = 2; j < dimSize-1; j++)    // Y-Axis
     {
-      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+      for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (j*offsetY + i);
         uint index2 (dimSize*offsetZ + j*offsetY + i);
@@ -415,9 +415,9 @@ void compute_cube_FDA1_3(
       }
     }
     //! XZ-plane Y = 0,1 / Y = MAX-1,MAX; Neiman's condition dp/dy = 0
-    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+      for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (k*offsetZ + i);
         uint index2 (k*offsetZ + dimSize*offsetY + i);
@@ -439,9 +439,9 @@ void compute_cube_FDA1_3(
     }
     
     //! YZ-plane X = 0,1 / X = MAX-1,MAX; Neiman's condition dp/dx = 0
-    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto j = 2; j < dimSize-1; j++)  // X-Axis
+      for (size_t j = 2; j < dimSize-1; j++)  // X-Axis
       {
         uint index1 (k*offsetZ + j*offsetY);
         uint index2 (k*offsetZ + j*offsetY + dimSize);
@@ -465,7 +465,7 @@ void compute_cube_FDA1_3(
 
     //---------------------------- edge knots ---------------------------------
     //! Y = Z = (0,1 || MAX,MAX-1); 
-    for (auto i = 2; i < dimSize-1; i++)
+    for (size_t i = 2; i < dimSize-1; i++)
     {
       // Y = Z = 0
       uint index1 (i);
@@ -502,7 +502,7 @@ void compute_cube_FDA1_3(
       //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
-    for (auto j = 2; j < dimSize-1; j++)
+    for (size_t j = 2; j < dimSize-1; j++)
     {
       // X = Z = 0
       uint index1 (j*offsetY);
@@ -539,7 +539,7 @@ void compute_cube_FDA1_3(
       //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
-    for (auto k = 2; k < dimSize-1; k++)
+    for (size_t k = 2; k < dimSize-1; k++)
     {
       // X = Y = 0
       uint index1 (k*offsetZ);
@@ -674,13 +674,13 @@ void compute_cube_FDA1_3(
     p = std::move(pHat);
     tick += 1;
     std::cout << "tick: " << tick << '\n';
-    for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
+    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
     code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
     code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
     code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
     code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);
   }
-  for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
+  for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
 }
 //=================================================================================================
@@ -713,7 +713,7 @@ void compute_cube_FDA2_4(
   std::vector<double> v1(vecSize);
   std::vector<double> w1(vecSize);
   Eigen::VectorXd p(vecSize);
-  for (auto i = 0; i < vecSize; i++) p[i] = p0[i];
+  for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
 
   while (tick < params.timePartition + 1)
   {
@@ -729,11 +729,11 @@ void compute_cube_FDA2_4(
 
     //! velocity compute
     //---------------------------- inner knots --------------------------------
-    for (auto k = 1; k < dimSize; k++)      // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)      // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)    // Y-Axis
+      for (size_t j = 1; j < dimSize; j++)    // Y-Axis
       {
-        for (auto i = 1; i < dimSize; i++)  // X-Axis
+        for (size_t i = 1; i < dimSize; i++)  // X-Axis
         {
           uint index (k*offsetZ + j*offsetY + i);
 
@@ -777,9 +777,9 @@ void compute_cube_FDA2_4(
 
     //---------------------------- border knots -------------------------------
     //! XY-plane Z = 0 / Z = MAX; Neiman's condition dw/dz = 0
-    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    for (size_t j = 1; j < dimSize; j++)    // Y-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index1 (j*offsetY + i);
         uint index2 (dimSize*offsetZ + j*offsetY + i);
@@ -795,9 +795,9 @@ void compute_cube_FDA2_4(
       }
     }
     //! XZ-plane Y = 0 / Y = MAX; Neiman's condition dv/dy = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)    // Z-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index1 (k*offsetZ + i);
         uint index2 (k*offsetZ + dimSize*offsetY + i);
@@ -813,9 +813,9 @@ void compute_cube_FDA2_4(
       }
     }
     //! YZ-plane X = 0 / X = MAX; Neiman's condition du/dx = 0
-    for (auto k = 1; k < dimSize; k++)    // Z-Axis
+    for (size_t k = 1; k < dimSize; k++)    // Z-Axis
     {
-      for (auto j = 1; j < dimSize; j++)  // X-Axis
+      for (size_t j = 1; j < dimSize; j++)  // X-Axis
       {
         uint index1 (k*offsetZ + j*offsetY);
         uint index2 (k*offsetZ + j*offsetY + dimSize);
@@ -834,7 +834,7 @@ void compute_cube_FDA2_4(
 
     //---------------------------- edge knots ---------------------------------
     //! Y = Z = (0 || MAX); dv/dy = 0; dw/dz = 0
-    for (auto i = 1; i < dimSize; i++)
+    for (size_t i = 1; i < dimSize; i++)
     {
       // Y = Z = 0
       uint index1 (i);
@@ -863,7 +863,7 @@ void compute_cube_FDA2_4(
 
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
-    for (auto j = 1; j < dimSize; j++)
+    for (size_t j = 1; j < dimSize; j++)
     {
       // X = Z = 0
       uint index1 (j*offsetY);
@@ -891,7 +891,7 @@ void compute_cube_FDA2_4(
       w1[index4] = wExac[index4];//w1[index4 - offsetZ] + (wExac[index4] - wExac[index4 - offsetZ]);
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
-    for (auto k = 1; k < dimSize; k++)
+    for (size_t k = 1; k < dimSize; k++)
     {
       // X = Y = 0
       uint index1 (k*offsetZ);
@@ -991,11 +991,11 @@ void compute_cube_FDA2_4(
     double FDA_coef = 1.0;
     //! FDA4's right part differs from FDA2's one by multiplication on 1/4
     if (!isFDA2) FDA_coef = 0.25; 
-    for (auto k = 2; k < dimSize-1; k++)      // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)      // Z-Axis
     {
-      for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
+      for (size_t j = 2; j < dimSize-1; j++)    // Y-Axis
       {
-        for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+        for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
         {
           uint index (k*offsetZ + j*offsetY + i); // central index
           // values at indexes
@@ -1088,9 +1088,9 @@ void compute_cube_FDA2_4(
 
     //---------------------------- border knots -------------------------------
     //! XY-plane Z = 0,1 / Z = MAX-1,MAX; Neiman's condition dp/dz = 0
-    for (auto j = 2; j < dimSize-1; j++)    // Y-Axis
+    for (size_t j = 2; j < dimSize-1; j++)    // Y-Axis
     {
-      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+      for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (j*offsetY + i);
         uint index2 (dimSize*offsetZ + j*offsetY + i);
@@ -1111,9 +1111,9 @@ void compute_cube_FDA2_4(
       }
     }
     //! XZ-plane Y = 0,1 / Y = MAX-1,MAX; Neiman's condition dp/dy = 0
-    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto i = 2; i < dimSize-1; i++)  // X-Axis
+      for (size_t i = 2; i < dimSize-1; i++)  // X-Axis
       {
         uint index1 (k*offsetZ + i);
         uint index2 (k*offsetZ + dimSize*offsetY + i);
@@ -1135,9 +1135,9 @@ void compute_cube_FDA2_4(
     }
     
     //! YZ-plane X = 0,1 / X = MAX-1,MAX; Neiman's condition dp/dx = 0
-    for (auto k = 2; k < dimSize-1; k++)    // Z-Axis
+    for (size_t k = 2; k < dimSize-1; k++)    // Z-Axis
     {
-      for (auto j = 2; j < dimSize-1; j++)  // X-Axis
+      for (size_t j = 2; j < dimSize-1; j++)  // X-Axis
       {
         uint index1 (k*offsetZ + j*offsetY);
         uint index2 (k*offsetZ + j*offsetY + dimSize);
@@ -1161,7 +1161,7 @@ void compute_cube_FDA2_4(
 
     //---------------------------- edge knots ---------------------------------
     //! Y = Z = (0,1 || MAX,MAX-1); 
-    for (auto i = 2; i < dimSize-1; i++)
+    for (size_t i = 2; i < dimSize-1; i++)
     {
       // Y = Z = 0
       uint index1 (i);
@@ -1198,7 +1198,7 @@ void compute_cube_FDA2_4(
       //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Z = (0 || MAX); du/dx = 0, dw/dz = 0
-    for (auto j = 2; j < dimSize-1; j++)
+    for (size_t j = 2; j < dimSize-1; j++)
     {
       // X = Z = 0
       uint index1 (j*offsetY);
@@ -1235,7 +1235,7 @@ void compute_cube_FDA2_4(
       //B[index1] = 0.0; B[index2] = 0.0; B[index3] = 0.0; B[index4] = 0.0;
     }
     //! X = Y = (0 || MAX)' du/dx = 0, dv/dy = 0
-    for (auto k = 2; k < dimSize-1; k++)
+    for (size_t k = 2; k < dimSize-1; k++)
     {
       // X = Y = 0
       uint index1 (k*offsetZ);
@@ -1370,13 +1370,13 @@ void compute_cube_FDA2_4(
     p = std::move(pHat);
     tick += 1;
     std::cout << "tick: " << tick << '\n';
-    for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
+    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
     code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
     code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
     code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
     code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);
   }
-  for (int i = 0; i < vecSize; ++i) p0[i] = p[i];
+  for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
 }
 //=================================================================================================
@@ -1402,11 +1402,11 @@ double velocity_residual_FDA1_3(
 
   double vectorResidual (0.0);
   //---------------------------- inner knots --------------------------------
-  for (auto k = 1; k < dimSize; k++)      // Z-Axis
+  for (size_t k = 1; k < dimSize; k++)      // Z-Axis
   {
-    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    for (size_t j = 1; j < dimSize; j++)    // Y-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index (k*offsetZ + j*offsetY + i);
         double resTerm (0.0); // residual term
@@ -1632,11 +1632,11 @@ double velocity_residual_FDA2_4(
 
   double vectorResidual (0.0);
   //---------------------------- inner knots --------------------------------
-  for (auto k = 1; k < dimSize; k++)      // Z-Axis
+  for (size_t k = 1; k < dimSize; k++)      // Z-Axis
   {
-    for (auto j = 1; j < dimSize; j++)    // Y-Axis
+    for (size_t j = 1; j < dimSize; j++)    // Y-Axis
     {
-      for (auto i = 1; i < dimSize; i++)  // X-Axis
+      for (size_t i = 1; i < dimSize; i++)  // X-Axis
       {
         uint index (k*offsetZ + j*offsetY + i);
         double resTerm (0.0); // residual term

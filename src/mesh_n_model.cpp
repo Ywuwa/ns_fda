@@ -42,13 +42,13 @@ void initialConditions(
   const double zStep (params.zLen / domainPartition);
   feature.reserve( (domainPartition + 1) * (domainPartition + 1) * (domainPartition + 1) );
   ABC_Flow functionSet;
-  functionContainer<ABC_Flow> fC(functionSet);
+  functionContainer<ABC_Flow> fC(&functionSet);
 
-  for (auto k = 0; k < domainPartition + 1; k++)      // Z-Axis
+  for (size_t k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {
-    for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
+    for (size_t j = 0; j < domainPartition + 1; j++)    // Y-Axis
     {
-      for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+      for (size_t i = 0; i < domainPartition + 1; i++)  // X-Axis
       {
         feature.emplace_back( (
           functionSet.*fC.indexedFunc[initFuncInd])
@@ -77,15 +77,15 @@ void compute_precise(
 
   const std::string outputFuncFile = params.PATH;
   ABC_Flow functionSet;
-  functionContainer fC(functionSet);
+  functionContainer fC(&functionSet);
   
   while (tick < params.timePartition + 1)
   {
-    for (auto k = 0; k < dimSize + 1; k++)      // Z-Axis
+    for (size_t k = 0; k < dimSize + 1; k++)      // Z-Axis
     {
-      for (auto j = 0; j < dimSize + 1; j++)    // Y-Axis
+      for (size_t j = 0; j < dimSize + 1; j++)    // Y-Axis
       {
-        for (auto i = 0; i < dimSize + 1; i++)  // X-Axis
+        for (size_t i = 0; i < dimSize + 1; i++)  // X-Axis
         {
           uint index (k*offsetZ + j*offsetY + i);
           u[index] = (functionSet.*fC.indexedFunc[0])(i*hX, j*hY, k*hZ, tick*tau, params.Reyn);
