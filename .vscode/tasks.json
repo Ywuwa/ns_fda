@@ -8,9 +8,11 @@
         "-fdiagnostics-color=always",
         "-g",
         "${file}",
+        "-fopenmp",
         "${workspaceFolder}\\src\\inout.cpp",
         "${workspaceFolder}\\src\\mesh_n_model.cpp",
         "${workspaceFolder}\\src\\compute_flow.cpp",
+        "${workspaceFolder}\\src\\concurrent_compute_flow.cpp",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe",
         "-I", "D:/Projects/C++/eigen-5.0.0"

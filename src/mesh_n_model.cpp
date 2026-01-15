@@ -42,7 +42,7 @@ void initialConditions(
   const double zStep (params.zLen / domainPartition);
   feature.reserve( (domainPartition + 1) * (domainPartition + 1) * (domainPartition + 1) );
   ABC_Flow functionSet;
-  functionContainer<ABC_Flow> fC(&functionSet);
+  functionContainer<ABC_Flow> fC(functionSet);
 
   for (size_t k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {
@@ -77,7 +77,7 @@ void compute_precise(
 
   const std::string outputFuncFile = params.PATH;
   ABC_Flow functionSet;
-  functionContainer fC(&functionSet);
+  functionContainer<ABC_Flow> fC(functionSet);
   
   while (tick < params.timePartition + 1)
   {

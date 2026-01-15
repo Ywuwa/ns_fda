@@ -278,9 +278,9 @@ void compute_cube_FDA1_3(
 
     // velocity residual
     //-------------------------------------------------------------------------
-    const double velResidual 
+    /*const double velResidual 
       = velocity_residual_FDA1_3(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;
+    outputResidualFile << velResidual << std::endl;*/
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
@@ -673,7 +673,7 @@ void compute_cube_FDA1_3(
     //-------------------------------------------------------------------------
     p = std::move(pHat);
     tick += 1;
-    std::cout << "tick: " << tick << '\n';
+    if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
     code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
     code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
@@ -1026,7 +1026,6 @@ void compute_cube_FDA2_4(
               )
             ) );
           if (isFDA2) {
-            std::cout << "alert" << '\n';
             B[index] += FDA2_right_part;
             continue;
           }
@@ -1369,7 +1368,7 @@ void compute_cube_FDA2_4(
     //-------------------------------------------------------------------------
     p = std::move(pHat);
     tick += 1;
-    std::cout << "tick: " << tick << '\n';
+    if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
     code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
     code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);

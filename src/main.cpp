@@ -1,6 +1,9 @@
 #include "../headers/inout.hpp"
 #include "../headers/mesh_n_model.hpp"
 #include "../headers/compute_flow.hpp"
+#include "../headers/concurrent_compute_flow.hpp"
+#include <chrono>
+#include <iomanip> // std::scientific, std::setprecision
 
 //=================================================================================================
 int main() {
@@ -24,6 +27,8 @@ int main() {
   code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model, true);
   code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model, true);
   code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model, true);
+
+  auto start = std::chrono::high_resolution_clock::now();
   // flow computation
   switch (model.fdaNumber)
   {
@@ -42,8 +47,22 @@ int main() {
   default:
     break;
   }
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> elapsed = end - start;
+  std::cout << "Время выполнения: " << elapsed.count() << " секунд" << std::endl;
+
+  // flow computation with OpenMP
+  /*auto startConc = std::chrono::high_resolution_clock::now();
+  //conc_compute_cube_FDA1_3(model, velX, velY, velZ, pressure);
+  //conc_compute_cube_FDA2_4(model, velX, velY, velZ, pressure);
 
   //compute_precise(model, velX, velY, velZ, pressure);
+  auto endConc = std::chrono::high_resolution_clock::now();
+
+  std::chrono::duration<double> elapsedConc = endConc - startConc;
+  std::cout << "Время выполнения: " << elapsedConc.count() << " секунд" << std::endl;
+  std::cout << std::scientific << std::setprecision(6)
+              << "aka " << elapsedConc.count() << " секунд\n";*/
   
   std::ofstream outputFile(model.PATH + "\\log.txt", std::ios::app);
   if (outputFile.is_open()) outputFile << "execution is finished" << '\n';

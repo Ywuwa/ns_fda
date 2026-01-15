@@ -15,7 +15,15 @@ struct model_data {
   double Reyn          {}; // Reynolds number
 
   const std::string PATH = "D:\\Projects\\C++\\ns_fda\\";
-  void show()
+  void operator=(const model_data&& other) 
+  {
+    fdaNumber = other.fdaNumber; 
+    domainPartition = other.domainPartition; 
+    timePartition = other.timePartition;
+    xLen = other.xLen; yLen = other.yLen; zLen = other.zLen; 
+    duration = other.duration; Reyn = other.Reyn;
+  }
+  void show() const 
   {
     std::cout << "X x Y x Z: " << xLen << " x " << yLen << " x " << zLen << '\n';
     std::cout << "flowing duration: " << duration << '\n';
@@ -23,5 +31,6 @@ struct model_data {
     std::cout << "time partition fineness: " << timePartition << '\n';
     std::cout << "Reynolds number: " << Reyn << '\n';
   }
+
 };
 //=================================================================================================
