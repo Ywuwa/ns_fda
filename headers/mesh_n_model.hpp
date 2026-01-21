@@ -46,7 +46,7 @@ struct functionContainer : model_data
     indexedFunc.emplace_back(&fSet::initV3);
     indexedFunc.emplace_back(&fSet::initPress);
   }
-  private:
+  public:
     fSet *instancePtr; // pointer to an fSet instance
 };
 //=================================================================================================

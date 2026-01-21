@@ -67,7 +67,6 @@ void compute_precise(
   const model_data& params,
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p)
 {
-  int code = 0;
   uint tick = 0;
   const auto dimSize ( params.domainPartition );
   const uint offsetY = dimSize + 1;
