@@ -21,8 +21,8 @@ void initialConditionsOMP(
   const double zStep (params.zLen / domainPartition);
   
   ABC_Flow functionSet;
-  functionContainer<ABC_Flow> fC(functionSet);
-
+  functionContainer<ABC_Flow> fC(&functionSet);
+  fC.setFunctions();
   #pragma omp parallel for collapse(2) schedule(static)
   for (size_t k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {

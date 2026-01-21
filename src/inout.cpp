@@ -111,11 +111,11 @@ int funcOutput(const std::string& path, const std::string& name, const std::stri
 	// Check if the file was opened successfully
 	if (outputFile.is_open()) {
 		const uint domainPartition = params.domainPartition;
-		for (auto k = 0; k < domainPartition + 1; k++)      // Z-Axis
+		for (size_t k = 0; k < domainPartition + 1; k++)      // Z-Axis
     {
-			for (auto j = 0; j < domainPartition + 1; j++)    // Y-Axis
+			for (size_t j = 0; j < domainPartition + 1; j++)    // Y-Axis
 			{
-				for (auto i = 0; i < domainPartition + 1; i++)  // X-Axis
+				for (size_t i = 0; i < domainPartition + 1; i++)  // X-Axis
 				{
 					index = k*(domainPartition+1)*(domainPartition+1) + j*(domainPartition+1) + i;
 					outputFile << funcValue[index] << ' ';

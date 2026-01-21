@@ -35,13 +35,13 @@ void compute_cube_FDA1_3(
   while (tick < params.timePartition + 1)
   {
     //! velocity exact
-    std::vector<double> uExac;
+    std::vector<double> uExac(vecSize);
     initialConditions(uExac, 0, params, tick*tau);
-    std::vector<double> vExac;
+    std::vector<double> vExac(vecSize);
     initialConditions(vExac, 1, params, tick*tau);
-    std::vector<double> wExac;
+    std::vector<double> wExac(vecSize);
     initialConditions(wExac, 2, params, tick*tau);
-    std::vector<double> pExac;
+    std::vector<double> pExac(vecSize);
     initialConditions(pExac, 3, params, tick*tau);
 
     //! velocity compute
@@ -278,9 +278,9 @@ void compute_cube_FDA1_3(
 
     // velocity residual
     //-------------------------------------------------------------------------
-    /*const double velResidual 
+    const double velResidual 
       = velocity_residual_FDA1_3(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;*/
+    outputResidualFile << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
@@ -718,13 +718,13 @@ void compute_cube_FDA2_4(
   while (tick < params.timePartition + 1)
   {
     //! velocity exact
-    std::vector<double> uExac;
+    std::vector<double> uExac(vecSize);
     initialConditions(uExac, 0, params, tick*tau);
-    std::vector<double> vExac;
+    std::vector<double> vExac(vecSize);
     initialConditions(vExac, 1, params, tick*tau);
-    std::vector<double> wExac;
+    std::vector<double> wExac(vecSize);
     initialConditions(wExac, 2, params, tick*tau);
-    std::vector<double> pExac;
+    std::vector<double> pExac(vecSize);
     initialConditions(pExac, 3, params, tick*tau);
 
     //! velocity compute

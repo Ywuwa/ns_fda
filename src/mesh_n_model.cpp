@@ -37,22 +37,25 @@ void initialConditions(
   const model_data& params, const double startTime)
 {
   const uint domainPartition = params.domainPartition;
+  const uint offsetY = domainPartition + 1;
+  const uint offsetZ = (domainPartition+1) * (domainPartition+1);
   const double xStep (params.xLen / domainPartition);
   const double yStep (params.yLen / domainPartition);
   const double zStep (params.zLen / domainPartition);
-  feature.reserve( (domainPartition + 1) * (domainPartition + 1) * (domainPartition + 1) );
+  
   ABC_Flow functionSet;
-  functionContainer<ABC_Flow> fC(functionSet);
-
+  functionContainer<ABC_Flow> fC(&functionSet);
+  fC.setFunctions();
   for (size_t k = 0; k < domainPartition + 1; k++)      // Z-Axis
   {
     for (size_t j = 0; j < domainPartition + 1; j++)    // Y-Axis
     {
       for (size_t i = 0; i < domainPartition + 1; i++)  // X-Axis
       {
-        feature.emplace_back( (
+        uint index (k*offsetZ + j*offsetY + i);
+        feature[index] = (
           functionSet.*fC.indexedFunc[initFuncInd])
-          (i*xStep, j*yStep, k*zStep, startTime, params.Reyn) );
+          (i*xStep, j*yStep, k*zStep, startTime, params.Reyn) ;
       }
     }
   }
@@ -77,8 +80,8 @@ void compute_precise(
 
   const std::string outputFuncFile = params.PATH;
   ABC_Flow functionSet;
-  functionContainer<ABC_Flow> fC(functionSet);
-  
+  functionContainer<ABC_Flow> fC(&functionSet);
+  fC.setFunctions();
   while (tick < params.timePartition + 1)
   {
     for (size_t k = 0; k < dimSize + 1; k++)      // Z-Axis

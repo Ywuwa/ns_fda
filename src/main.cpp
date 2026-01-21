@@ -13,13 +13,16 @@ int main() {
   model.show();
 
   // function init
-  std::vector<double> velX;
+  const uint vecSize ( (model.domainPartition + 1) * 
+                        (model.domainPartition + 1) * 
+                        (model.domainPartition + 1) );
+  std::vector<double> velX(vecSize);
   initialConditions(velX, 0, model);
-  std::vector<double> velY;
+  std::vector<double> velY(vecSize);
   initialConditions(velY, 1, model);
-  std::vector<double> velZ;
+  std::vector<double> velZ(vecSize);
   initialConditions(velZ, 2, model);
-  std::vector<double> pressure;
+  std::vector<double> pressure(vecSize);
   initialConditions(pressure, 3, model);
 
   const std::string outputFuncFile = model.PATH;

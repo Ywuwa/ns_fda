@@ -24,7 +24,7 @@ struct ABC_Flow
  */
 template <typename fSet>
 struct functionContainer : model_data
-{
+/*{
   std::vector<double (fSet::*)(
     const double, const double, const double, const double, const double )> indexedFunc;
   functionContainer(const fSet& name)
@@ -34,8 +34,8 @@ struct functionContainer : model_data
     indexedFunc.emplace_back(name.initV3);
     indexedFunc.emplace_back(name.initPress);
   }
-};
-/*{
+};*/
+{
   std::vector<double (fSet::*)(
     const double, const double, const double, const double, const double )> indexedFunc;
   functionContainer(fSet* name) : instancePtr(name){ }
@@ -48,7 +48,7 @@ struct functionContainer : model_data
   }
   private:
     fSet *instancePtr; // pointer to an fSet instance
-};*/
+};
 //=================================================================================================
 
 //=================================== INITIAL CONDITIONS ==========================================
