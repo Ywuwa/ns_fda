@@ -27,12 +27,12 @@ struct functionContainer : model_data
 /*{
   std::vector<double (fSet::*)(
     const double, const double, const double, const double, const double )> indexedFunc;
-  functionContainer(const fSet& name)
+  functionContainer()
   { 
-    indexedFunc.emplace_back(name.initV1);
-    indexedFunc.emplace_back(name.initV2);
-    indexedFunc.emplace_back(name.initV3);
-    indexedFunc.emplace_back(name.initPress);
+    indexedFunc.emplace_back(&fSet::initV1);
+    indexedFunc.emplace_back(&fSet::initV2);
+    indexedFunc.emplace_back(&fSet::initV3);
+    indexedFunc.emplace_back(&fSet::initPress);
   }
 };*/
 {
@@ -41,10 +41,10 @@ struct functionContainer : model_data
   functionContainer(fSet* name) : instancePtr(name){ }
   void setFunctions()
   {
-    indexedFunc.emplace_back(instancePtr->initV1);
-    indexedFunc.emplace_back(instancePtr->initV2);
-    indexedFunc.emplace_back(instancePtr->initV3);
-    indexedFunc.emplace_back(instancePtr->initPress);
+    indexedFunc.emplace_back(&fSet::initV1);
+    indexedFunc.emplace_back(&fSet::initV2);
+    indexedFunc.emplace_back(&fSet::initV3);
+    indexedFunc.emplace_back(&fSet::initPress);
   }
   private:
     fSet *instancePtr; // pointer to an fSet instance
