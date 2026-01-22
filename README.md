@@ -4,6 +4,7 @@ This is a study pet-project, connected with 3D solution of Navier-Stokes equatio
 
 ## Python files
 
++ **residual.py** - plots residual graphics from files "residual*"
 + **visualize.py** - module with reading data and its single-frame visualization
 + **video_maker_velocity.py** - uses visualize.py, create video of grid-function velocity change
 + **video_maker_velocity_pair.py** - uses visualize.py, create video of grid-function velocity change in comparsion with original one change
@@ -17,9 +18,10 @@ This is a study pet-project, connected with 3D solution of Navier-Stokes equatio
   - main
   - mesh_n_model (init mesh and model parameters, initial conditions, precise solution)
   - compute_flow (construct scheme, solve equations)
+  - concurrent_compute_flow (the same as compute flow but with OpneMP concurrency)
 + headers
   - settings (contains model parameters structure and includes some basic libraries)
-+ config (contains model data aka domain X-Y-Z size, domain partition, time partition, Reynolds number etc)
++ config (contains model data aka number of scheme, domain X-Y-Z size, domain partition, time partition, Reynolds number etc)
 
 ## Other
 + .vscode (vscode settings)

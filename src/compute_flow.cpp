@@ -1356,6 +1356,7 @@ void compute_cube_FDA2_4(
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Can not build preconditioner" << std::endl;
+      std::cout << "Can not build preconditioner" << std::endl;
       return;
     }
     Eigen::VectorXd pHat(vecSize);
@@ -1363,6 +1364,7 @@ void compute_cube_FDA2_4(
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
+      std::cout << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
       return;
     }
     //-------------------------------------------------------------------------
