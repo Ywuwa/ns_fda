@@ -30,7 +30,7 @@ void compute_cube_FDA1_3(
   std::vector<double> v1(vecSize);
   std::vector<double> w1(vecSize);
   Eigen::VectorXd p(vecSize);
-  for (auto i = 0; i < vecSize; i++) p[i] = p0[i];
+  for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
 
   while (tick < params.timePartition + 1)
   {

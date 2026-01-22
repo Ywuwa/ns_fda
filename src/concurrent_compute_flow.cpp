@@ -776,7 +776,7 @@ void conc_compute_cube_FDA2_4( const model_data& params,
   std::vector<double> w1(vecSize);
   
   Eigen::VectorXd p(vecSize);
-  for (auto i = 0; i < vecSize; i++) p[i] = p0[i];
+  for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
   //! initialization of equation entities (Ax = b)
   Eigen::SparseMatrix<double> A(vecSize, vecSize);
   Eigen::VectorXd B(vecSize);
