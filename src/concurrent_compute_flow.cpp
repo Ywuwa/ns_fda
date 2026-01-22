@@ -52,8 +52,8 @@ void conc_compute_cube_FDA1_3( const model_data& params,
   const double hX ( params.xLen / dimSize ); // x-step
   const double hY ( params.yLen / dimSize ); // y-step
   const double hZ ( params.zLen / dimSize ); // z-step
-  std::ofstream outputFile( params.PATH + "\\log.txt", std::ios::out);
-  std::ofstream outputResidualFile( params.PATH + "\\residual.txt", std::ios::out);
+  std::ofstream outputFile( params.PATH + params.PATH_log, std::ios::out);
+  std::ofstream outputResidualFile( params.PATH + params.PATH_residual, std::ios::out);
   const std::string outputFuncFile =  params.PATH;
   
   // vector size
@@ -63,7 +63,7 @@ void conc_compute_cube_FDA1_3( const model_data& params,
   std::vector<double> w1(vecSize);
   
   Eigen::VectorXd p(vecSize);
-  for (auto i = 0; i < vecSize; i++) p[i] = p0[i];
+  for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
   //! initialization of equation entities (Ax = b)
   Eigen::SparseMatrix<double> A(vecSize, vecSize);
   Eigen::VectorXd B(vecSize);
@@ -721,6 +721,7 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Can not build preconditioner" << std::endl;
+      std::cout << "Can not build preconditioner" << std::endl;
       return;
     }
     Eigen::VectorXd pHat(vecSize);
@@ -728,6 +729,7 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
+      std::cout << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
       return;
     }
     //-------------------------------------------------------------------------
@@ -765,8 +767,8 @@ void conc_compute_cube_FDA2_4( const model_data& params,
   const double hX ( params.xLen / dimSize ); // x-step
   const double hY ( params.yLen / dimSize ); // y-step
   const double hZ ( params.zLen / dimSize ); // z-step
-  std::ofstream outputFile( params.PATH + "\\log.txt", std::ios::out);
-  std::ofstream outputResidualFile( params.PATH + "\\residual.txt", std::ios::out);
+  std::ofstream outputFile( params.PATH + params.PATH_log, std::ios::out);
+  std::ofstream outputResidualFile( params.PATH + params.PATH_residual, std::ios::out);
   const std::string outputFuncFile =  params.PATH;
   
   // vector size
@@ -1442,6 +1444,7 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Can not build preconditioner" << std::endl;
+      std::cout << "Can not build preconditioner" << std::endl;
       return;
     }
     Eigen::VectorXd pHat(vecSize);
@@ -1449,6 +1452,7 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
+      std::cout << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
       return;
     }
     //-------------------------------------------------------------------------

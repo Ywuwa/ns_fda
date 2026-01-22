@@ -1,9 +1,9 @@
 #include "../headers/inout.hpp"
-
+#include <filesystem>
 //====================================== FILE READING =============================================
 int dataInput(const std::string& filename, model_data& params) {
 	std::ifstream file(filename);
-	std::ofstream outputFile(params.PATH + "\\log.txt", std::ios::out);
+	std::ofstream outputFile(params.PATH + params.PATH_log, std::ios::out);
 	if (!file.is_open()) {
 		outputFile << "Cannot open file" << std::endl;
 		return -1; // Cannot open file
@@ -105,6 +105,8 @@ int funcOutput(const std::string& path, const std::string& name, const std::stri
 	const std::string& extension, const std::vector<double>& funcValue, const model_data& params,
 	const bool onOffNotification)
 {
+	std::filesystem::path dir = path + name + "/";
+	std::filesystem::create_directories(dir); // creates new directory if needed
 	const std::string filename = path + name + "/" + number + extension;
   std::ofstream outputFile(filename, std::ios::out);
 	size_t index  (0);

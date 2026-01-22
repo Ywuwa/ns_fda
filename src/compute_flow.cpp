@@ -21,8 +21,8 @@ void compute_cube_FDA1_3(
   const double hY (params.yLen / dimSize ); // y-step
   const double hZ (params.zLen / dimSize ); // z-step
 
-  std::ofstream outputFile(params.PATH + "\\log.txt", std::ios::out);
-  std::ofstream outputResidualFile(params.PATH + "\\residual.txt", std::ios::out);
+  std::ofstream outputFile(params.PATH + params.PATH_log, std::ios::out);
+  std::ofstream outputResidualFile(params.PATH + params.PATH_residual, std::ios::out);
   const std::string outputFuncFile = params.PATH;
   // vector size
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
@@ -659,6 +659,7 @@ void compute_cube_FDA1_3(
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Can not build preconditioner" << std::endl;
+      std::cout << "Can not build preconditioner" << std::endl;
       return;
     }
     Eigen::VectorXd pHat(vecSize);
@@ -666,6 +667,7 @@ void compute_cube_FDA1_3(
     if (solver.info() != Eigen::Success)
     {
       outputFile << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
+      std::cout << "Failed to solve the system with Eigen, tick = " << tick << std::endl;
       return;
     }
     //-------------------------------------------------------------------------
@@ -704,8 +706,8 @@ void compute_cube_FDA2_4(
   const double hY (params.yLen / dimSize ); // y-step
   const double hZ (params.zLen / dimSize ); // z-step
 
-  std::ofstream outputFile(params.PATH + "\\log.txt", std::ios::out);
-  std::ofstream outputResidualFile(params.PATH + "\\residual.txt", std::ios::out);
+  std::ofstream outputFile(params.PATH + params.PATH_log, std::ios::out);
+  std::ofstream outputResidualFile(params.PATH + params.PATH_residual, std::ios::out);
   const std::string outputFuncFile = params.PATH;
   // vector size
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);

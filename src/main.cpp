@@ -8,7 +8,7 @@
 //=================================================================================================
 int main() {
   model_data model;
-  const std::string inputFile = model.PATH + "\\config";
+  const std::string inputFile = model.PATH + model.PATH_config;
   int code = dataInput(inputFile, model);
   model.show();
 
@@ -67,7 +67,7 @@ int main() {
   std::cout << std::scientific << std::setprecision(6)
               << "aka " << elapsedConc.count() << " секунд\n";*/
   
-  std::ofstream outputFile(model.PATH + "\\log.txt", std::ios::app);
+  std::ofstream outputFile(model.PATH + model.PATH_log, std::ios::app);
   if (outputFile.is_open()) outputFile << "execution is finished" << '\n';
 }
 //=================================================================================================

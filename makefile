@@ -4,16 +4,17 @@ TARGET = ns_fda_3D
 SRCS = src/main.cpp src/inout.cpp src/mesh_n_model.cpp src/compute_flow.cpp src/concurrent_compute_flow.cpp
 OBJS = $(SRCS:.cpp=.o)
 
+.PHONY: clean
+
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
-
+    
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 -include $(OBJS:.o=.d)
 
-.PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(TARGET) $(OBJS) $(OBJS:.o=.d)
