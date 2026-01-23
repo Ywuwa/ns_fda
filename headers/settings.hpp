@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <filesystem>
 #include <vector>
 #include <cmath>
 using uint = unsigned int;
@@ -14,7 +15,7 @@ struct model_data {
   double duration      {}; // flowing duration
   double Reyn          {}; // Reynolds number
 
-  const std::string PATH = "D:\\Projects\\C++\\ns_fda\\";
+  std::string PATH = "";
   const std::string PATH_log = "\\log.txt";
   const std::string PATH_residual = "\\residual.txt";
   const std::string PATH_config = "\\config";
@@ -33,7 +34,7 @@ struct model_data {
     std::cout << "domain partition fineness: " << domainPartition << '\n';
     std::cout << "time partition fineness: " << timePartition << '\n';
     std::cout << "Reynolds number: " << Reyn << '\n';
+    std::cout << "PATH: " << PATH << '\n';
   }
-
 };
 //=================================================================================================

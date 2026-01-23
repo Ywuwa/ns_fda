@@ -6,8 +6,12 @@
 #include <iomanip> // std::scientific, std::setprecision
 
 //=================================================================================================
-int main() {
+int main(int argc, char* argv[]) {
   model_data model;
+  std::filesystem::path full_path(argv[0]);
+  std::filesystem::path dir = full_path.parent_path().parent_path();
+  model.PATH = dir.string();
+  std::cout << model.PATH << '\n';
   const std::string inputFile = model.PATH + model.PATH_config;
   int code = dataInput(inputFile, model);
   model.show();
