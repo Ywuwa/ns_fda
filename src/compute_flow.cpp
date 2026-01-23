@@ -677,10 +677,10 @@ void compute_cube_FDA1_3(
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);
+    code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+    code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+    code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+    code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
   }
   for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
@@ -1374,10 +1374,10 @@ void compute_cube_FDA2_4(
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);
+    code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+    code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+    code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+    code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
   }
   for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';

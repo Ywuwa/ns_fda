@@ -16,9 +16,9 @@ struct model_data {
   double Reyn          {}; // Reynolds number
 
   std::string PATH = "";
-  const std::string PATH_log = "\\log.txt";
-  const std::string PATH_residual = "\\residual.txt";
-  const std::string PATH_config = "\\config";
+  const std::string PATH_log = "/log.txt";
+  const std::string PATH_residual = "/residual.txt";
+  const std::string PATH_config = "/config";
   void operator=(const model_data&& other) 
   {
     fdaNumber = other.fdaNumber; 

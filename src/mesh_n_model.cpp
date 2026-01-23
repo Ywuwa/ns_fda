@@ -98,10 +98,10 @@ void compute_precise(
         }
       }
     }
-    code = funcOutput(outputFuncFile, "helical_v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "helical_v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "helical_v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "helical_p", std::to_string(tick), ".txt", p, params, false);
+    code = funcOutput(outputFuncFile, "/helical_v1", std::to_string(tick), ".txt", u, params, false);
+    code = funcOutput(outputFuncFile, "/helical_v2", std::to_string(tick), ".txt", v, params, false);
+    code = funcOutput(outputFuncFile, "/helical_v3", std::to_string(tick), ".txt", w, params, false);
+    code = funcOutput(outputFuncFile, "/helical_p", std::to_string(tick), ".txt", p, params, false);
     tick += 1;
   }
   std::cout << "final tick: " << tick << '\n';

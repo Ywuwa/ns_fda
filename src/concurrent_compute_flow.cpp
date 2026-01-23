@@ -742,10 +742,10 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
-      /*code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
-      code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
-      code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
-      code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);*/
+      /*code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+      code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+      code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+      code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);*/
     }
   }
   #pragma omp parallel for schedule(static)
@@ -1465,10 +1465,10 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
-      /*code = funcOutput(outputFuncFile, "v1", std::to_string(tick), ".txt", u, params, false);
-      code = funcOutput(outputFuncFile, "v2", std::to_string(tick), ".txt", v, params, false);
-      code = funcOutput(outputFuncFile, "v3", std::to_string(tick), ".txt", w, params, false);
-      code = funcOutput(outputFuncFile, "p", std::to_string(tick), ".txt", p0, params, false);*/
+      /*code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+      code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+      code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+      code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);*/
     }
   }
   #pragma omp parallel for schedule(static)

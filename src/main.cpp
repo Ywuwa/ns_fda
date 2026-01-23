@@ -8,7 +8,7 @@
 //=================================================================================================
 int main(int argc, char* argv[]) {
   model_data model;
-  std::filesystem::path full_path(argv[0]);
+  std::filesystem::path full_path(std::filesystem::absolute(argv[0]));
   std::filesystem::path dir = full_path.parent_path().parent_path();
   model.PATH = dir.string();
   std::cout << model.PATH << '\n';
@@ -30,10 +30,10 @@ int main(int argc, char* argv[]) {
   initialConditions(pressure, 3, model);
 
   const std::string outputFuncFile = model.PATH;
-  code = funcOutput(outputFuncFile, "v1", std::to_string(0), ".txt", velX, model, true);
-  code = funcOutput(outputFuncFile, "v2", std::to_string(0), ".txt", velY, model, true);
-  code = funcOutput(outputFuncFile, "v3", std::to_string(0), ".txt", velZ, model, true);
-  code = funcOutput(outputFuncFile, "p", std::to_string(0), ".txt", pressure, model, true);
+  code = funcOutput(outputFuncFile, "/v1", std::to_string(0), ".txt", velX, model, true);
+  code = funcOutput(outputFuncFile, "/v2", std::to_string(0), ".txt", velY, model, true);
+  code = funcOutput(outputFuncFile, "/v3", std::to_string(0), ".txt", velZ, model, true);
+  code = funcOutput(outputFuncFile, "/p", std::to_string(0), ".txt", pressure, model, true);
 
   auto start = std::chrono::high_resolution_clock::now();
   // flow computation
