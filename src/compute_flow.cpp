@@ -1319,7 +1319,7 @@ void compute_cube_FDA2_4(
     // X = Z = 0, Y = MAX
     index = dimSize*offsetY;
     triplets.emplace_back(index,index, 1.0);
-    B[index] = pExac[index];//B[index] = p[index];
+    B[index] = pExac[index];//B[index] = p[index];fi
     // X = Y = 0, Z = MAX
     index = dimSize*offsetZ;
     triplets.emplace_back(index,index, 1.0);

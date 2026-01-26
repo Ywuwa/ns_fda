@@ -738,7 +738,6 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     p = std::move(pHat);
     #pragma omp parallel for schedule(static)
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    tick += 1;
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
@@ -747,6 +746,7 @@ void conc_compute_cube_FDA1_3( const model_data& params,
       code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
       code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);*/
     }
+    tick += 1;
   }
   #pragma omp parallel for schedule(static)
   for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
@@ -1461,7 +1461,6 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     p = std::move(pHat);
     #pragma omp parallel for schedule(static)
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    tick += 1;
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
@@ -1470,6 +1469,7 @@ void conc_compute_cube_FDA2_4( const model_data& params,
       code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
       code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);*/
     }
+    tick += 1;
   }
   #pragma omp parallel for schedule(static)
   for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
