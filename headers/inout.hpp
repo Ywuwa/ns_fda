@@ -19,7 +19,7 @@ int dataInput(const std::string& filename, model_data& params);
  *  \param[in] onOffNotification - ON/OFF console text
  *  \return code of operation
  */
-int funcOutput(const std::string& path, const std::string& name, const std::string& number, 
+void funcOutput(const std::string& path, const std::string& name, const std::string& number, 
 	const std::string& extension, const std::vector<double>& funcValue, const model_data& params,
   const bool onOffNotification = false);
   //=================================================================================================

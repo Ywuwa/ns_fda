@@ -1,4 +1,5 @@
-CXX = g++
+#CXX = g++
+CXX = clang++
 CXXFLAGS = -std=c++17 -fopenmp -I/usr/include/eigen3 -Wall -g -MMD -MP
 TARGET = ns_fda_3D
 SRCS = src/main.cpp src/inout.cpp src/mesh_n_model.cpp src/compute_flow.cpp src/concurrent_compute_flow.cpp

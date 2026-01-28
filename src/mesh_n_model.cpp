@@ -67,7 +67,6 @@ void compute_precise(
   const model_data& params,
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p)
 {
-  int code = 0;
   uint tick = 0;
   const auto dimSize ( params.domainPartition );
   const uint offsetY = dimSize + 1;
@@ -98,10 +97,10 @@ void compute_precise(
         }
       }
     }
-    code = funcOutput(outputFuncFile, "/helical_v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "/helical_v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "/helical_v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "/helical_p", std::to_string(tick), ".txt", p, params, false);
+    funcOutput(outputFuncFile, "/helical_v1", std::to_string(tick), ".txt", u, params, false);
+    funcOutput(outputFuncFile, "/helical_v2", std::to_string(tick), ".txt", v, params, false);
+    funcOutput(outputFuncFile, "/helical_v3", std::to_string(tick), ".txt", w, params, false);
+    funcOutput(outputFuncFile, "/helical_p", std::to_string(tick), ".txt", p, params, false);
     tick += 1;
   }
   std::cout << "final tick: " << tick << '\n';

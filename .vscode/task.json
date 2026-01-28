@@ -2,11 +2,12 @@
   "tasks": [
     {
       "type": "cppbuild",
-      "label": "C/C++: g++.exe build active file",
-      "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+      "label": "C/C++: clang++.exe build active file",
+      "command": "C:/msys64/clang64/bin/clang++.exe",
       "args": [
         "-fdiagnostics-color=always",
         "-g",
+        "-O3",
         "${file}",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe",

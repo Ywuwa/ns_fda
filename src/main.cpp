@@ -14,6 +14,7 @@ int main(int argc, char* argv[]) {
   std::cout << model.PATH << '\n';
   const std::string inputFile = model.PATH + model.PATH_config;
   int code = dataInput(inputFile, model);
+  if (code < 0) return 0;
   model.show();
 
   // function init
@@ -30,10 +31,10 @@ int main(int argc, char* argv[]) {
   initialConditions(pressure, 3, model);
 
   const std::string outputFuncFile = model.PATH;
-  code = funcOutput(outputFuncFile, "/v1", std::to_string(0), ".txt", velX, model, true);
-  code = funcOutput(outputFuncFile, "/v2", std::to_string(0), ".txt", velY, model, true);
-  code = funcOutput(outputFuncFile, "/v3", std::to_string(0), ".txt", velZ, model, true);
-  code = funcOutput(outputFuncFile, "/p", std::to_string(0), ".txt", pressure, model, true);
+  funcOutput(outputFuncFile, "/v1", std::to_string(0), ".txt", velX, model, true);
+  funcOutput(outputFuncFile, "/v2", std::to_string(0), ".txt", velY, model, true);
+  funcOutput(outputFuncFile, "/v3", std::to_string(0), ".txt", velZ, model, true);
+  funcOutput(outputFuncFile, "/p", std::to_string(0), ".txt", pressure, model, true);
 
   auto start = std::chrono::high_resolution_clock::now();
   // flow computation

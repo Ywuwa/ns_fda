@@ -10,7 +10,6 @@ void compute_cube_FDA1_3(
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0)
 {
   bool isFDA1 (params.fdaNumber == 1);
-  int code = 0;  // exit code
   uint tick = 1; // number of time step
   const auto dimSize ( params.domainPartition );  // 1-dimension size
   const uint offsetY = dimSize + 1;               // j+1 component (i+1 component is just [index+1])
@@ -675,10 +674,10 @@ void compute_cube_FDA1_3(
     //-------------------------------------------------------------------------
     p = std::move(pHat);
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
+    funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+    funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+    funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+    funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
   }
@@ -695,7 +694,6 @@ void compute_cube_FDA2_4(
   std::vector<double>& u, std::vector<double>& v, std::vector<double>& w, std::vector<double>& p0)
 {
   bool isFDA2 (params.fdaNumber == 2);
-  int code = 0;  // exit code
   uint tick = 1; // number of time step
   const auto dimSize ( params.domainPartition );  // 1-dimension size
   const uint offsetY = dimSize + 1;               // j+1 component (i+1 component is just [index+1])
@@ -1374,10 +1372,10 @@ void compute_cube_FDA2_4(
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
-    code = funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
-    code = funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
-    code = funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
-    code = funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
+    funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
+    funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
+    funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
+    funcOutput(outputFuncFile, "/p", std::to_string(tick), ".txt", p0, params, false);
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
   }
