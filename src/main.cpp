@@ -3,7 +3,6 @@
 #include "../headers/compute_flow.hpp"
 #include "../headers/concurrent_compute_flow.hpp"
 #include <chrono>
-#include <iomanip> // std::scientific, std::setprecision
 
 //=================================================================================================
 int main(int argc, char* argv[]) {

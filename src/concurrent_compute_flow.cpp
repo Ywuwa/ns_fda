@@ -321,7 +321,7 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     //-------------------------------------------------------------------------
     const double velResidual 
       = conc_velocity_residual_FDA1_3(params, u1, v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;
+    outputResidualFile << std::scientific << velResidual << std::endl;
 
     //std::cout << velResidual << std::endl;
     //-------------------------------------------------------------------------
@@ -1042,7 +1042,7 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     //-------------------------------------------------------------------------
     const double velResidual 
       = conc_velocity_residual_FDA2_4(params, u1, v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;
+    outputResidualFile << std::scientific << velResidual << std::endl;
 
     //std::cout << velResidual << std::endl;
     //-------------------------------------------------------------------------

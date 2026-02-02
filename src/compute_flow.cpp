@@ -279,7 +279,7 @@ void compute_cube_FDA1_3(
     //-------------------------------------------------------------------------
     const double velResidual 
       = velocity_residual_FDA1_3(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;
+    outputResidualFile << std::scientific << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
@@ -966,7 +966,7 @@ void compute_cube_FDA2_4(
     //-------------------------------------------------------------------------
     const double velResidual 
       = velocity_residual_FDA2_4(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << velResidual << std::endl;
+    outputResidualFile << std::scientific << velResidual << std::endl;
     //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------

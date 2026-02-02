@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <iomanip> // std::scientific, std::setprecision
 #include <filesystem>
 #include <vector>
 #include <cmath>
