@@ -672,8 +672,8 @@ void compute_cube_FDA1_3(
     //-------------------------------------------------------------------------
     // refresh Pressure values (transfer Eigen-vector to vector)
     //-------------------------------------------------------------------------
-    p = std::move(pHat);
-    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
+
+    for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
     funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
     funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
     funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
@@ -1368,10 +1368,10 @@ void compute_cube_FDA2_4(
     //-------------------------------------------------------------------------
     // refresh Pressure values (transfer Eigen-vector to vector)
     //-------------------------------------------------------------------------
-    p = std::move(pHat);
+
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
-    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
+    for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
     funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
     funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
     funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);

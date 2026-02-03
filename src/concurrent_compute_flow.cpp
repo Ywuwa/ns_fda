@@ -735,9 +735,9 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     //-------------------------------------------------------------------------
     // refresh Pressure values (transfer Eigen-vector to vector)
     //-------------------------------------------------------------------------
-    p = std::move(pHat);
+
     #pragma omp parallel for schedule(static)
-    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
+    for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
@@ -1461,9 +1461,9 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     //-------------------------------------------------------------------------
     // refresh Pressure values (transfer Eigen-vector to vector)
     //-------------------------------------------------------------------------
-    p = std::move(pHat);
+
     #pragma omp parallel for schedule(static)
-    for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
+    for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
