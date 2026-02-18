@@ -20,13 +20,33 @@ struct model_data {
   const std::string PATH_log = "/log.txt";
   const std::string PATH_residual = "/residual.txt";
   const std::string PATH_config = "/config";
-  void operator=(const model_data&& other) 
+  model_data& operator=(const model_data&& other) noexcept
   {
-    fdaNumber = other.fdaNumber; 
-    domainPartition = other.domainPartition; 
-    timePartition = other.timePartition;
-    xLen = other.xLen; yLen = other.yLen; zLen = other.zLen; 
-    duration = other.duration; Reyn = other.Reyn;
+    if (this != &other)
+    {
+      fdaNumber = other.fdaNumber; 
+      domainPartition = other.domainPartition; 
+      timePartition = other.timePartition;
+      xLen = other.xLen; yLen = other.yLen; zLen = other.zLen; 
+      duration = other.duration; Reyn = other.Reyn;
+
+      PATH = other.PATH;
+    }
+    return *this;
+  }
+  model_data& operator=(const model_data& other) noexcept
+  {
+    if (this != &other)
+    {
+      fdaNumber = other.fdaNumber; 
+      domainPartition = other.domainPartition; 
+      timePartition = other.timePartition;
+      xLen = other.xLen; yLen = other.yLen; zLen = other.zLen; 
+      duration = other.duration; Reyn = other.Reyn;
+
+      PATH = other.PATH;
+    }
+    return *this;
   }
   void show() const 
   {
