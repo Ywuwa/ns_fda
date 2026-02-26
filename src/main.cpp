@@ -20,13 +20,13 @@ int main(int argc, char* argv[]) {
   const uint vecSize ( (model.domainPartition + 1) * 
                         (model.domainPartition + 1) * 
                         (model.domainPartition + 1) );
-  std::vector<double> velX(vecSize);
+  std::vector<double> velX(vecSize, 0.0);
   initialConditions(velX, 0, model);
-  std::vector<double> velY(vecSize);
+  std::vector<double> velY(vecSize, 0.0);
   initialConditions(velY, 1, model);
-  std::vector<double> velZ(vecSize);
+  std::vector<double> velZ(vecSize, 0.0);
   initialConditions(velZ, 2, model);
-  std::vector<double> pressure(vecSize);
+  std::vector<double> pressure(vecSize, 0.0);
   initialConditions(pressure, 3, model);
 
   const std::string outputFuncFile = model.PATH;

@@ -25,22 +25,22 @@ void compute_cube_FDA1_3(
   const std::string outputFuncFile = params.PATH;
   // vector size
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
-  std::vector<double> u1(vecSize);
-  std::vector<double> v1(vecSize);
-  std::vector<double> w1(vecSize);
+  std::vector<double> u1(vecSize, 0.0);
+  std::vector<double> v1(vecSize, 0.0);
+  std::vector<double> w1(vecSize, 0.0);
   Eigen::VectorXd p(vecSize);
   for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
 
   while (tick < params.timePartition + 1)
   {
     //! velocity exact
-    std::vector<double> uExac(vecSize);
+    std::vector<double> uExac(vecSize, 0.0);
     initialConditions(uExac, 0, params, tick*tau);
-    std::vector<double> vExac(vecSize);
+    std::vector<double> vExac(vecSize, 0.0);
     initialConditions(vExac, 1, params, tick*tau);
-    std::vector<double> wExac(vecSize);
+    std::vector<double> wExac(vecSize, 0.0);
     initialConditions(wExac, 2, params, tick*tau);
-    std::vector<double> pExac(vecSize);
+    std::vector<double> pExac(vecSize, 0.0);
     initialConditions(pExac, 3, params, tick*tau);
 
     //! velocity compute
@@ -274,13 +274,6 @@ void compute_cube_FDA1_3(
     u1[index] = uExac[index];//u1[index - 1] + (uExac[index] - uExac[index - 1]);
     v1[index] = vExac[index];//v1[index - offsetY] + (vExac[index] - vExac[index - offsetY]);
     w1[index] = wExac[index];//w1[index - offsetZ] + (wExac[index] - wExac[index - offsetZ]);
-
-    // velocity residual
-    //-------------------------------------------------------------------------
-    const double velResidual 
-      = velocity_residual_FDA1_3(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << std::scientific << velResidual << std::endl;
-    //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
     // move data from upper time layer
@@ -674,6 +667,14 @@ void compute_cube_FDA1_3(
     //-------------------------------------------------------------------------
 
     for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
+
+    // residual
+    //-------------------------------------------------------------------------
+    const double velResidual 
+      = velocity_residual_FDA1_3(params, u,v,w,p0, uExac,vExac,wExac,pExac);
+    outputResidualFile << std::scientific << velResidual << std::endl;
+    //-------------------------------------------------------------------------
+
     funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
     funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
     funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
@@ -709,22 +710,22 @@ void compute_cube_FDA2_4(
   const std::string outputFuncFile = params.PATH;
   // vector size
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
-  std::vector<double> u1(vecSize);
-  std::vector<double> v1(vecSize);
-  std::vector<double> w1(vecSize);
+  std::vector<double> u1(vecSize, 0.0);
+  std::vector<double> v1(vecSize, 0.0);
+  std::vector<double> w1(vecSize, 0.0);
   Eigen::VectorXd p(vecSize);
   for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
 
   while (tick < params.timePartition + 1)
   {
     //! velocity exact
-    std::vector<double> uExac(vecSize);
+    std::vector<double> uExac(vecSize, 0.0);
     initialConditions(uExac, 0, params, tick*tau);
-    std::vector<double> vExac(vecSize);
+    std::vector<double> vExac(vecSize, 0.0);
     initialConditions(vExac, 1, params, tick*tau);
-    std::vector<double> wExac(vecSize);
+    std::vector<double> wExac(vecSize, 0.0);
     initialConditions(wExac, 2, params, tick*tau);
-    std::vector<double> pExac(vecSize);
+    std::vector<double> pExac(vecSize, 0.0);
     initialConditions(pExac, 3, params, tick*tau);
 
     //! velocity compute
@@ -961,13 +962,6 @@ void compute_cube_FDA2_4(
     u1[index] = uExac[index];//u1[index - 1] + (uExac[index] - uExac[index - 1]);
     v1[index] = vExac[index];//v1[index - offsetY] + (vExac[index] - vExac[index - offsetY]);
     w1[index] = wExac[index];//w1[index - offsetZ] + (wExac[index] - wExac[index - offsetZ]);
-
-    // velocity residual
-    //-------------------------------------------------------------------------
-    const double velResidual 
-      = velocity_residual_FDA2_4(params, u1,v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << std::scientific << velResidual << std::endl;
-    //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
     // move data from upper time layer
@@ -1372,6 +1366,14 @@ void compute_cube_FDA2_4(
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
     for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
+
+    // residual
+    //-------------------------------------------------------------------------
+    const double velResidual 
+      = velocity_residual_FDA2_4(params, u,v,w,p0, uExac,vExac,wExac,pExac);
+    outputResidualFile << std::scientific << velResidual << std::endl;
+    //-------------------------------------------------------------------------
+
     funcOutput(outputFuncFile, "/v1", std::to_string(tick), ".txt", u, params, false);
     funcOutput(outputFuncFile, "/v2", std::to_string(tick), ".txt", v, params, false);
     funcOutput(outputFuncFile, "/v3", std::to_string(tick), ".txt", w, params, false);
@@ -1379,7 +1381,7 @@ void compute_cube_FDA2_4(
     tick += 1;
     if ((tick % 100 == 0)) std::cout << "tick: " << tick << '\n';
   }
-  for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
+  //for (size_t i = 0; i < vecSize; ++i) p0[i] = p[i];
   std::cout << "final tick: " << tick << '\n';
 }
 //=================================================================================================

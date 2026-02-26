@@ -58,10 +58,9 @@ void conc_compute_cube_FDA1_3( const model_data& params,
   
   // vector size
   const size_t vecSize = (dimSize + 1) * (dimSize + 1) * (dimSize + 1);
-  std::vector<double> u1(vecSize);
-  std::vector<double> v1(vecSize);
-  std::vector<double> w1(vecSize);
-  
+  std::vector<double> u1(vecSize, 0.0);
+  std::vector<double> v1(vecSize, 0.0);
+  std::vector<double> w1(vecSize, 0.0);
   Eigen::VectorXd p(vecSize);
   for (size_t i = 0; i < vecSize; i++) p[i] = p0[i];
   //! initialization of equation entities (Ax = b)
@@ -74,13 +73,13 @@ void conc_compute_cube_FDA1_3( const model_data& params,
   while (tick < 2)//params.timePartition + 1)
   {
     //! velocity exact
-    std::vector<double> uExac(vecSize);
+    std::vector<double> uExac(vecSize, 0.0);
     initialConditionsOMP(uExac, 0, params, tick*tau);
-    std::vector<double> vExac(vecSize);
+    std::vector<double> vExac(vecSize, 0.0);
     initialConditionsOMP(vExac, 1, params, tick*tau);
-    std::vector<double> wExac(vecSize);
+    std::vector<double> wExac(vecSize, 0.0);
     initialConditionsOMP(wExac, 2, params, tick*tau);
-    std::vector<double> pExac(vecSize);
+    std::vector<double> pExac(vecSize, 0.0);
     initialConditionsOMP(pExac, 3, params, tick*tau);
 
     #pragma omp parallel
@@ -317,15 +316,6 @@ void conc_compute_cube_FDA1_3( const model_data& params,
     v1[index] = vExac[index];
     w1[index] = wExac[index];
     
-    // velocity residual
-    //-------------------------------------------------------------------------
-    const double velResidual 
-      = conc_velocity_residual_FDA1_3(params, u1, v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << std::scientific << velResidual << std::endl;
-
-    //std::cout << velResidual << std::endl;
-    //-------------------------------------------------------------------------
-
     //-------------------------------------------------------------------------
     // move data from upper time layer
     u.clear(); u = std::move(u1);
@@ -738,6 +728,14 @@ void conc_compute_cube_FDA1_3( const model_data& params,
 
     #pragma omp parallel for schedule(static)
     for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
+
+    // residual
+    //-------------------------------------------------------------------------
+    const double velResidual 
+      = conc_velocity_residual_FDA1_3(params, u,v,w,p0, uExac,vExac,wExac,pExac);
+    outputResidualFile << std::scientific << velResidual << std::endl;
+    //-------------------------------------------------------------------------
+
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
@@ -1038,15 +1036,6 @@ void conc_compute_cube_FDA2_4( const model_data& params,
     v1[index] = vExac[index];
     w1[index] = wExac[index];
     
-    // velocity residual
-    //-------------------------------------------------------------------------
-    const double velResidual 
-      = conc_velocity_residual_FDA2_4(params, u1, v1,w1,p0, uExac,vExac,wExac,pExac);
-    outputResidualFile << std::scientific << velResidual << std::endl;
-
-    //std::cout << velResidual << std::endl;
-    //-------------------------------------------------------------------------
-
     //-------------------------------------------------------------------------
     // move data from upper time layer
     u.clear(); u = std::move(u1);
@@ -1464,6 +1453,14 @@ void conc_compute_cube_FDA2_4( const model_data& params,
 
     #pragma omp parallel for schedule(static)
     for (size_t i = 0; i < vecSize; ++i) {p0[i] = pHat[i]; p[i] = pHat[i];}
+
+    // residual
+    //-------------------------------------------------------------------------
+    const double velResidual 
+      = conc_velocity_residual_FDA2_4(params, u,v,w,p0, uExac,vExac,wExac,pExac);
+    outputResidualFile << std::scientific << velResidual << std::endl;
+    //-------------------------------------------------------------------------
+
     if ((tick % 10 == 0)) 
     {
       std::cout << "tick: " << tick << '\n';
